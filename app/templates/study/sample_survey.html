@@ -1,0 +1,201 @@
+{% extends "template_parts/base.html" %}
+
+
+{% block content %}
+<main class="col px-md-4">
+	<div class="bg-white p-3 mt-4">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+			<h1 class="h2">Closing Survey</h1>
+		</div>
+		<div class="">
+
+			<form action="" method="post">
+				{{ form.hidden_tag() }}
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.factors_in_data.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.factors_in_data %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.understood.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.understood %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.change_detail_level.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.change_detail_level %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.need_support.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.need_support %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.understood_causality.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.understood_causality %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.use_with_knowledge.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.use_with_knowledge %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.no_inconsistencies.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.no_inconsistencies %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.learn_to_understand.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.learn_to_understand %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.need_references.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.need_references %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row">
+					<div class="col-5">
+						{{ form.efficient.label (class_="form-label") }}
+					</div>
+					<div class="col-7">
+					{% for subfield in form.efficient %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="row mb-3">
+
+					{{ form.text.label (class_="form-label") }}
+					<div style="padding-right: calc(var(--bs-gutter-x)* .5);padding-left: calc(var(--bs-gutter-x)* .5);">
+						<p>This could include:</p>
+						<ol>
+							<li>How accurate you thought the AI predictions were</li>
+							<li>The usefullness of the concept explantions and modifying concept predictions</li>
+						</ol>
+					</div>
+					<div class="col">
+						{{ form.text (class_="form-control") }}
+					</div>
+					{% for error in form.text.errors %}
+						<span style="color: red;">[{{ error }}]</span>
+					{% endfor %}
+				</div>
+
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+
+		</div>
+	</div>
+
+</main>
+
+{% endblock %}

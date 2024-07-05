@@ -1,0 +1,28 @@
+The players hand has an ace with the value of 11
+The players hand does not have an ace with the value of 11
+The players hand has the card value of 21 or over
+The players hand has the card value of 21
+The players hand has the card value of 20
+The players hand has the card value of 19
+The players hand has the card value of 18
+The players hand has the card value of 17
+The players hand has the card value of 16
+The players hand has the card value of 15
+The players hand has the card value of 14
+The players hand has the card value of 13
+The players hand has the card value of 12
+The players hand has the card value of 11
+The players hand has the card value of 10
+The players hand has the card value of 9
+The players hand has the card value of 8 or lower
+The dealer hand has the card value of 2
+The dealer hand has the card value of 3
+The dealer hand has the card value of 4
+The dealer hand has the card value of 5
+The dealer hand has the card value of 6
+The dealer hand has the card value of 7
+The dealer hand has the card value of 8
+The dealer hand has the card value of 9
+The dealer hand has the card value of 10
+The dealer hand has an ace
+The dealer hand has more than one card

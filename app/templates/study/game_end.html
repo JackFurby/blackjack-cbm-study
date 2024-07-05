@@ -1,0 +1,280 @@
+{% extends "template_parts/base.html" %}
+
+
+{% block content %}
+<main class="col px-md-4">
+	<div class="bg-white p-3 mt-4">
+
+		<div class="row">
+
+			<div id="ai-prediction" class="bg-white col-12 col-md-7">
+				<div class="position-container">
+					<div class="container-fluid" style="max-width: 1140px;">
+						<div class="row mb-3">
+							<div class="col-12">
+								<div class="m-auto" id="input_img_container">
+									<img class="mb-3 h-auto" src="{{ url_for('study.get_image', filename=game_id|string + '/' + dealer_sample_number|string + '/dealer_cards.jpeg') }}" width="100%" id="model_input">
+									<img class="mb-3 h-auto" src="{{ url_for('study.get_image', filename=game_id|string + '/' + player_sample_number|string + '/player_cards.jpeg') }}" width="100%" id="model_input">
+								</div>
+							</div>
+							<div class="col-12">
+								<p>Score: {{total_score}}</p>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="d-grid col-6 mx-auto mt-5">
+				<a class="btn btn-primary btn-lg mx-auto" href="{{ url_for('study.samples') }}" id="next_game" role="button">Continue</a>
+			</div>
+		</div>
+
+		<br/>
+
+	</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort.min.js"></script>
+<script type=text/javascript src="{{url_for('static', filename='js/js-image-zoom.js') }}"></script>
+<script type="text/javascript">
+
+	var last_recorded_action_time = Date.now();
+	const sample_id = {{ sample_id }};
+
+	// reset concept value to initial on button click
+	function resetValue(input_id) {
+		initial_value = document.getElementById(input_id + "-initial").value;
+		document.getElementById(input_id).value = initial_value;
+		document.getElementById(input_id + "-reset").disabled = true;
+		document.getElementById(input_id + "-badge").innerHTML = initial_value;
+		logUpdate(input_id, sample_id, true);
+	};
+
+	// enabe reset button
+	function enableBtn(btn_id) {
+		document.getElementById(btn_id).disabled = false;
+	};
+
+	// update readout for slider value and update concept image
+	function updateValue(input_id) {
+		new_value = document.getElementById(input_id).value;
+		document.getElementById(input_id + "-badge").innerHTML = new_value;
+	};
+
+	// log user changes to concept predictions
+	async function logUpdate(concept_id, sample_id, reset_pressed) {
+
+		action_time = Date.now();
+
+		const model_pred = await predict();
+
+		$.ajax({
+			type:'POST',
+			url:'{{ url_for('study.log_range_update') }}',
+			data:{
+				type: "range",
+				last_action_time: last_recorded_action_time,
+				action_time: action_time,
+				update_value: document.getElementById(concept_id).value,  // range html object id is the same as the concept id
+				concept_id: concept_id,
+				sample_id: sample_id,
+				reset_pressed: reset_pressed,
+				model_malignant: model_pred
+			}
+		});
+
+		last_recorded_action_time = action_time;
+	};
+
+	const allExplanaions = document.querySelectorAll('[id^="explanation_"]');
+
+	allExplanaions.forEach(explanation_object => {
+		// log whenever concept explanations are visible
+		var observer = new IntersectionObserver((entries) => {
+			if (entries[0].intersectionRatio >= 0.001) {  // using ratio as without logs are less consistent
+				var concept_id = entries[0]['target'].id.split("_")[1] // get concept id
+				$.ajax({
+					type:'POST',
+					url:'{{ url_for('study.log_concept_seen') }}',
+					data:{
+						type: "concept visible",
+						action_time: Date.now(),
+						concept_id: concept_id,
+						sample_id: sample_id,
+					}
+				});
+			}
+		});
+
+		observer.observe(explanation_object);
+	});
+
+	// predict downstrea task from concept values
+	async function predict() {
+		// load model
+		const session = await ort.InferenceSession.create("{{ url_for('study.static', filename=model_name) }}");
+
+		// get concpet values and turn into tensor
+		var concept_arr = [];
+		{% for concept in concept_out %}
+			concept_arr.push(document.getElementById("{{ concept[0] }}").value);
+		{% endfor %}
+		const concept_vec = new Float32Array(concept_arr);
+		const tensorA = new ort.Tensor('float32', concept_vec, [1, 22]);
+
+		// prepare feed for models. Key is the model input name
+		const feeds = { "onnx::Gemm_0": tensorA };
+
+		// get downstream task predictions
+		const results = await session.run(feeds);
+
+		// Get index of highest value in downsream task predictions
+		const task_output = results["7"].data;
+		var maxNum = Math.max.apply(null, task_output);
+		var index = task_output.indexOf(maxNum);
+
+		// update task out prediction displayed
+		if (index <= 0) {
+			var model_out = "seborrheic keratosis"
+		} else {
+			var model_out = "malignant melanoma"
+		};
+		document.getElementById("task-out").innerHTML = model_out;
+
+		// log model prediction (will only update db on first log)
+		$.ajax({
+			type:'POST',
+			url:'{{ url_for('study.model_prediction') }}',
+			data:{
+				sample_id: sample_id,
+				model_malignant: model_out,
+			}
+		});
+
+		return model_out
+	};
+
+	//https://bootstrap-menu.com/detail-fixed-onscroll.html
+	//document.addEventListener("DOMContentLoaded", function(){
+	//	window.addEventListener('scroll', function() {
+	//		if (window.scrollY > 50) {
+	//			document.getElementById('ai-prediction').classList.add('fixed-top');
+	//		} else {
+	//			document.getElementById('ai-prediction').classList.remove('fixed-top');
+	//		}
+	//	});
+	//});
+
+	// reorder concept explanations
+	function orderConcepts(orderby, logUpdate) {
+		var concept_list = [];
+		// add all concepts ids and values to array
+		allExplanaions.forEach(explanation_object => {
+			concept_list.push([explanation_object.id, document.getElementById(explanation_object.id.split('_')[1]).value])
+		});
+
+		// reorder aray
+		if (orderby == "lh") {
+			concept_list.sort(function(a,b){return a[1].localeCompare(b[1]);});
+		} else {  // hl
+			concept_list.sort(function(a,b){return a[1].localeCompare(b[1]);}).reverse();
+		}
+
+		// add each explanation to the div all_explanations in order of concept_list
+		container = document.getElementById("all_explanations")
+		concept_list.forEach(explanation => {
+			container.appendChild(document.getElementById(explanation[0]))
+		});
+
+		if (logUpdate) {
+			action_time = Date.now();
+
+			$.ajax({
+				type:'POST',
+				url:'{{ url_for('study.log_sort_update') }}',
+				data:{
+					type: "sort",
+					action_time: action_time,
+					update_value: orderby,
+					sample_id: sample_id,
+				}
+			});
+		};
+	};
+
+	{% for concept in concept_out %}
+		{% set concept_id = concept[0] %}
+		$('#collapseDesc_{{ concept_id }}').on('show.bs.collapse', function () {
+			action_time = Date.now();
+
+			$.ajax({
+				type:'POST',
+				url:'{{ url_for('study.toggle_concept_desc') }}',
+				data:{
+					type: "concept description show",
+					action_time: action_time,
+					concept_id: {{ concept_id }},
+					sample_id: sample_id,
+				}
+			});
+		})
+
+		$('#collapseDesc_{{ concept_id }}').on('hidden.bs.collapse', function () {
+			action_time = Date.now();
+
+			$.ajax({
+				type:'POST',
+				url:'{{ url_for('study.toggle_concept_desc') }}',
+				data:{
+					type: "concept description hide",
+					action_time: action_time,
+					concept_id: {{ concept_id }},
+					sample_id: sample_id,
+				}
+			});
+		})
+	{% endfor %}
+
+	// image zoom
+	var imageZoomMainOptions = {
+		fillContainer: true,
+		offset: {vertical: 0, horizontal: 0},
+		zoomPosition: "bottom",
+		zoomStyle: "z-index: 999;",
+	};
+
+	var imageZoomExplainOptions = {
+		fillContainer: true,
+		scale: 1.1,
+		zoomWidth: 300,
+		width: 200,
+		height: 200,
+		offset: {vertical: 0, horizontal: 0},
+		zoomPosition: "bottom",
+		zoomStyle: "z-index: 999;",
+	};
+
+	//new ImageZoom(document.getElementById("input_img_container"), imageZoomMainOptions);
+
+	{% if explanation_version == 1 %}
+		{% for concept in concept_out %}
+			new ImageZoom(document.getElementById("{{ concept[0] }}_img_container"), imageZoomExplainOptions);
+		{% endfor %}
+	{% endif %}
+
+	// run all functions for the inital page load
+	window.onload = function() {
+		var model_pred = predict();
+		orderConcepts("hl", false);
+
+		// clear select form radio buttons
+		document.getElementById("ai_use-0").checked = false;
+		document.getElementById("ai_use-1").checked = false;
+	};
+
+</script>
+
+{% endblock %}

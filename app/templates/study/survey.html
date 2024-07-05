@@ -1,0 +1,67 @@
+{% extends "template_parts/base.html" %}
+
+
+{% block content %}
+<main class="col px-md-4">
+	<div class="bg-white p-3 mt-4">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+			<h1 class="h2">Demographic survey</h1>
+		</div>
+		<div class="">
+
+			<form action="" method="post">
+				{{ form.hidden_tag() }}
+
+				<div class="row">
+					<div class="col-4">
+						<p>I am an experienced Blackjack</p>
+					</div>
+					<div class="col-8">
+					{% for subfield in form.blackjack_experience %}
+						<div class="form-check form-check-inline">
+							{{ subfield (class_="form-check-input") }}
+							{{ subfield.label (class_="form-check-label") }}
+						</div>
+					{% endfor %}
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-4">
+						<p>I am experienced in computer science / computing</p>
+					</div>
+					<div class="col-8">
+						{% for subfield in form.computer_experience %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="row mb-3">
+					<div class="col-3">
+						{{ form.age.label (class_="form-label") }}
+						{{ form.age (class_="form-control") }}
+						{% for error in form.age.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+					<div class="col-3">
+						{{ form.gender.label (class_="form-label") }}
+						{{ form.gender (class_="form-select") }}
+						{% for error in form.gender.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</div>
+				</div>
+
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
+	</div>
+
+</main>
+
+{% endblock %}
