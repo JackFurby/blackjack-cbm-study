@@ -7,10 +7,12 @@ import os
 from werkzeug.utils import secure_filename
 from app.study import bp
 from app.forms import ConsentForm, DemographicForm, SampleForm, SurveyForm
-from app.models import Consent, Demographic, Participant, Action, Sample, Survey, ConceptSort
+from app.models import Consent, Demographic, Participant, Action, Sample, Survey, ConceptSort, Game
+from sqlalchemy import func
 from app import db
 from app import mail
 import random
+import json
 
 
 def get_datetime(milliseconds):
@@ -132,19 +134,13 @@ def samples():
 
 		# if bust, stand or surrender then remove game_id from games_left
 		if request.form['participant_move'] in ["1", "2", "3"]:
-			return redirect(url_for('study.game_end', last_player_sample=samples_left[0]))
+			return redirect(url_for('study.game_end', last_player_sample=samples_left[0], player_move=request.form['participant_move']))
 
 		# remove sample from game_samples
 		del samples_left[0]
 		session["game_samples"] = samples_left
 
-
-
-
 	if "participant_id" in session:  # redirect if participant has not completed demographic survey
-
-		if "total_score" not in session:
-			session["total_score"] = 0
 
 		if "games_left" not in session:  # randomly order games
 			games = [int(i) for i in next(os.walk(f"{bp.static_folder}/games"))[1]]
@@ -153,6 +149,9 @@ def samples():
 
 		if len(session["games_left"]) == 0:  # if all games seen; end study and go to closing survey
 			return redirect(url_for('study.sample_survey'))
+
+		# get sum of game scores
+		total_score = db.session.query(func.sum(Game.score)).filter(Game.participant_id==session["participant_id"]).all()
 
 		# get game id
 		games_left = session["games_left"]
@@ -168,9 +167,9 @@ def samples():
 		samples_left = session["game_samples"]
 		sample_number = samples_left[0]
 
-		# either player has drawn their last card or the game is over (deler is given all of their cards)
+		# either player has drawn their last card or the game is over (dealer is given all of their cards)
 		if len(samples_left) < 3:
-			return redirect(url_for('study.game_end', last_player_sample=samples_left[0]))
+			return redirect(url_for('study.game_end', last_player_sample=samples_left[0], player_move=-1))
 
 		# if sample does not exist in db (first time sample is show to participant) then create db entery
 		if db.session.query(Sample).filter_by(participant_id=session["participant_id"], game_id=game_id, sample_number=sample_number).first() is None:
@@ -208,23 +207,108 @@ def samples():
 		2 = Concept predictions + explanation by example
 		"""
 
-		print(concept_preds)
-		print(len(concept_preds))
-
-		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=session["explanation_version"], total_score=session["total_score"])
+		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=session["explanation_version"], total_score=total_score)
 	else:
 		return redirect(url_for('study.survey'))
 
 
 # Show the results of a game
-@bp.route('/game_end/<last_player_sample>', methods=['GET'])
-def game_end(last_player_sample):
+@bp.route('/game_end/', methods=['GET'])
+def game_end():
+
+	last_player_sample = request.args.get('last_player_sample')
+	player_move = int(request.args.get('player_move'))
 
 	dealer_sample_number = session["game_samples"][-1]
 
-	# end game and clear game samples
+	# end game and add results to game table
 	games_left = session["games_left"]
 	game_id = games_left[-1]
+
+	# get player total
+	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{last_player_sample}/score.txt") as f:
+		content = (f.read().decode('latin1').strip()).split("\n")
+		lines = []
+		for line in content:
+			line = line.split(" ")
+			lines.append([line[0].strip(), line[1].strip()])  # player/dealer, score
+
+		player_total = int(lines[0][1])
+
+	# get dealer total
+	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{dealer_sample_number}/score.txt") as f:
+		content = (f.read().decode('latin1').strip()).split("\n")
+		lines = []
+		for line in content:
+			line = line.split(" ")
+			lines.append([line[0].strip(), line[1].strip()])  # player/dealer, score
+
+		dealer_total = int(lines[1][1])
+
+	"""
+	Game scoring
+	============
+
+	+---------------------+----------------------------------+--------------------+---------------------+
+	|                     |       player_less_than_21        |      player_21     | player_more_than_21 |
+	+---------------------+----------------------------------+--------------------+---------------------+
+	| dealer_less_than_21 | tie or player wins or player lost| player blackjack   | player lost         |
+	|       dealer_21     | Player lost                      | tie                | player lost         |
+	| dealer_more_than_21 | player wins                      | player blackjack   | tie / dealer lost   |
+	+---------------------+----------------------------------+--------------------+---------------------+
+
+	player wins = +50
+	player lost = -50
+	player blackjack = +75
+	tie = 0
+	dealer lost = 0
+
+	* if player and dealer have less than 21 then tie if total match, player lost if less than dealer, else player wins
+	* if a player surrenders then the score is always -25
+
+
+	"""
+	if player_move == 2:  # surrender (move==2) always gets -25 points
+		score = -25
+
+	elif dealer_total > 21:
+		if player_total > 21:
+			score = 0  # tie / dealer lost
+		elif player_total == 21:
+			score = 75  # player blackjack
+		else:  # player_score < 21
+			score = 50  # player wins
+	elif dealer_total == 21:
+		if player_total > 21:
+			score = -50  # player lost
+		elif player_total == 21:
+			score = 0  # tie
+		else:  # player_score < 21
+			score = -50  # player lost
+	else:  # player_score < 21
+		if player_total > 21:
+			score = -50  # player lost
+		elif player_total == 21:
+			score = 75  # player blackjack
+		else:  # player_score < 21
+			if player_total == dealer_total:
+				score = 0  # tie
+			elif player_total > dealer_total:
+				score = 50  # player wins
+			else:  # player_total < dealer_total
+				score = -50  # player lost
+
+	game = Game(
+		participant_id=int(session["participant_id"]),
+		game_id=game_id,
+		score=score,
+	)
+	db.session.add(game)
+	db.session.commit()
+
+	total_score = db.session.query(func.sum(Game.score)).filter(Game.participant_id==session["participant_id"]).all()
+
+	# clear game data from cookies
 	del games_left[-1]
 	del session["game_samples"]
 	session["games_left"] = games_left
@@ -232,16 +316,16 @@ def game_end(last_player_sample):
 	# we return the sample number of the last player card draw and the final sample in the game. In the interface we show the dealer cards part of the last sample, and the
 	# player cards of the last player card draw
 
-	return render_template('study/game_end.html', title='CBM Study', game_id=game_id, player_sample_number=last_player_sample, dealer_sample_number=dealer_sample_number)
+	return render_template('study/game_end.html', title='CBM Study', game_id=game_id, player_sample_number=last_player_sample, dealer_sample_number=dealer_sample_number, score=score, total_score=total_score)
 
 
 # log what the model predicts for the downstream task (discard the log if the value has already been set)
 @bp.route('/model_prediction/', methods=['POST'])
 def model_prediction():
-	sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], sample_id=request.form.get("sample_id")).first()
+	sample = db.session.query(Sample).filter_by(participant_id=session["participant_id"], game_id=request.form.get("game_id"), sample_number=request.form.get("sample_number")).first()
 	if sample != None:
-		if sample.model_malignant == None:
-			sample.model_malignant = True if request.form.get("model_malignant") == 'malignant' else False
+		if sample.model_move == None:
+			sample.model_move = request.form.get("model_move")
 			db.session.add(sample)
 			db.session.commit()
 			return jsonify("Action logged")
@@ -312,9 +396,10 @@ def log_range_update():
 		action_time=get_datetime(int(request.form.get("action_time"))),
 		update_value=int(float(request.form.get("update_value")) * 100),
 		concept_id=int(request.form.get("concept_id")),
-		sample_id=int(request.form.get("sample_id")),
+		game_id=int(request.form.get("game_id")),
+		sample_number=int(request.form.get("sample_number")),
 		reset_pressed=True if request.form.get("reset_pressed") == 'true' else False,
-		model_malignant=True if request.form.get("model_malignant") == 'malignant' else False
+		model_move=request.form.get("model_move")
 	)
 	db.session.add(action)
 	db.session.commit()
@@ -330,7 +415,8 @@ def log_concept_seen():
 		type=request.form.get("type"),
 		action_time=get_datetime(int(request.form.get("action_time"))),
 		concept_id=int(request.form.get("concept_id")),
-		sample_id=int(request.form.get("sample_id"))
+		game_id=int(request.form.get("game_id")),
+		sample_number=int(request.form.get("sample_number"))
 	)
 	db.session.add(action)
 	db.session.commit()
@@ -345,7 +431,8 @@ def log_sort_update():
 		participant_id=int(session["participant_id"]),
 		action_time=get_datetime(int(request.form.get("action_time"))),
 		update_value=request.form.get("update_value"),
-		sample_id=int(request.form.get("sample_id"))
+		game_id=int(request.form.get("game_id")),
+		sample_number=int(request.form.get("sample_number"))
 	)
 	db.session.add(action)
 	db.session.commit()
@@ -361,7 +448,8 @@ def toggle_concept_desc():
 		type=request.form.get("type"),
 		action_time=get_datetime(int(request.form.get("action_time"))),
 		concept_id=int(request.form.get("concept_id")),
-		sample_id=int(request.form.get("sample_id"))
+		game_id=int(request.form.get("game_id")),
+		sample_number=int(request.form.get("sample_number"))
 	)
 	db.session.add(action)
 	db.session.commit()
@@ -372,10 +460,6 @@ def toggle_concept_desc():
 # clear session data
 @bp.route('/clear_session')
 def clear_session():
-	try:
-		del session["total_score"]
-	except Exception as e:
-		print(f"Could not delete: {e}")
 	try:
 		del session["games_left"]
 	except Exception as e:

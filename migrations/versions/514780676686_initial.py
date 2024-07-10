@@ -1,8 +1,8 @@
-"""initial database
+"""initial
 
-Revision ID: acef960bd5fe
+Revision ID: 514780676686
 Revises: 
-Create Date: 2024-06-23 13:03:50.508077
+Create Date: 2024-07-09 17:35:57.365374
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'acef960bd5fe'
+revision = '514780676686'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,7 +36,7 @@ def upgrade():
     )
     op.create_table('demographic',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('skin_experience', sa.String(length=32), nullable=False),
+    sa.Column('blackjack_experience', sa.String(length=32), nullable=False),
     sa.Column('computer_experience', sa.String(length=32), nullable=False),
     sa.Column('age', sa.Integer(), nullable=False),
     sa.Column('gender', sa.String(length=16), nullable=False),
@@ -60,9 +60,10 @@ def upgrade():
     sa.Column('action_time', sa.DateTime(), nullable=True),
     sa.Column('update_value', sa.Integer(), nullable=True),
     sa.Column('concept_id', sa.Integer(), nullable=False),
-    sa.Column('sample_id', sa.Integer(), nullable=False),
+    sa.Column('game_id', sa.Integer(), nullable=False),
+    sa.Column('sample_number', sa.Integer(), nullable=False),
     sa.Column('reset_pressed', sa.Boolean(), nullable=True),
-    sa.Column('model_malignant', sa.Boolean(), nullable=True),
+    sa.Column('model_move', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['participant_id'], ['participant.id'], ),
@@ -76,7 +77,8 @@ def upgrade():
     sa.Column('participant_id', sa.Integer(), nullable=False),
     sa.Column('action_time', sa.DateTime(), nullable=False),
     sa.Column('update_value', sa.String(length=8), nullable=False),
-    sa.Column('sample_id', sa.Integer(), nullable=False),
+    sa.Column('game_id', sa.Integer(), nullable=False),
+    sa.Column('sample_number', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['participant_id'], ['participant.id'], ),
@@ -85,12 +87,26 @@ def upgrade():
     with op.batch_alter_table('concept_sort', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_concept_sort_participant_id'), ['participant_id'], unique=False)
 
+    op.create_table('game',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('participant_id', sa.Integer(), nullable=False),
+    sa.Column('game_id', sa.Integer(), nullable=False),
+    sa.Column('score', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['participant_id'], ['participant.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    with op.batch_alter_table('game', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_game_participant_id'), ['participant_id'], unique=False)
+
     op.create_table('sample',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('participant_id', sa.Integer(), nullable=False),
-    sa.Column('sample_id', sa.Integer(), nullable=False),
-    sa.Column('participant_malignant', sa.Boolean(), nullable=True),
-    sa.Column('model_malignant', sa.Boolean(), nullable=True),
+    sa.Column('game_id', sa.Integer(), nullable=False),
+    sa.Column('sample_number', sa.Integer(), nullable=False),
+    sa.Column('participant_move', sa.Integer(), nullable=True),
+    sa.Column('model_move', sa.Integer(), nullable=True),
     sa.Column('start_time', sa.DateTime(), nullable=False),
     sa.Column('complete_time', sa.DateTime(), nullable=True),
     sa.Column('ai_use', sa.Integer(), server_default='0', nullable=False),
@@ -137,6 +153,10 @@ def downgrade():
         batch_op.drop_index(batch_op.f('ix_sample_participant_id'))
 
     op.drop_table('sample')
+    with op.batch_alter_table('game', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_game_participant_id'))
+
+    op.drop_table('game')
     with op.batch_alter_table('concept_sort', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_concept_sort_participant_id'))
 

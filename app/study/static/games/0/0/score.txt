@@ -1,0 +1,2 @@
+player 20
+dealer 10

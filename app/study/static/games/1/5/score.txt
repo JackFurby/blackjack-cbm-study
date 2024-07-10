@@ -1,0 +1,2 @@
+player 24
+dealer 11

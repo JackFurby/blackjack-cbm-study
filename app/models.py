@@ -23,7 +23,7 @@ class Consent(db.Model):
 	keep_me_updated: so.Mapped[bool] = so.mapped_column(sa.Boolean())
 
 	def __repr__(self):
-		return '<Consent {}>'.format(self.id)
+		return f'<Consent {self.id}>'
 
 
 class Demographic(db.Model):
@@ -50,6 +50,18 @@ class Participant(db.Model):
 		return f'<Participant id:{self.id}, explanation_version: {self.explanation_version}>'
 
 
+class Game(db.Model):
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	participant_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Participant.id), index=True)
+	game_id: so.Mapped[int] = so.mapped_column()
+	score: so.Mapped[Optional[int]] = so.mapped_column()
+	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
+	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+
+	def __repr__(self):
+		return f'<Game {self.id}>'
+
+
 class Action(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
 	participant_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Participant.id), index=True)
@@ -58,14 +70,15 @@ class Action(db.Model):
 	action_time: so.Mapped[Optional[datetime]] = so.mapped_column()
 	update_value: so.Mapped[Optional[int]] = so.mapped_column()
 	concept_id: so.Mapped[int] = so.mapped_column()
-	sample_id: so.Mapped[int] = so.mapped_column()
+	game_id: so.Mapped[int] = so.mapped_column()
+	sample_number: so.Mapped[int] = so.mapped_column()
 	reset_pressed: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean())
-	model_malignant: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean())
+	model_move: so.Mapped[Optional[int]] = so.mapped_column()
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Action {self.id}, {self.participant_id}, {self.type}, {self.last_action_time}, {self.action_time}, {self.update_value}, {self.concept_id}, {self.sample_id}, {self.reset_pressed}, {self.model_malignant}>'
+		return f'<Action {self.id}, participant_id:{self.participant_id}, type:{self.type}, last_action_time:{self.last_action_time}, action_time:{self.action_time}, update_value:{self.update_value}, concept_id:{self.concept_id}, game_id:{self.game_id}, sample_number:{self.sample_number}, reset_pressed:{self.reset_pressed}, model_move:{self.model_move}>'
 
 
 class ConceptSort(db.Model):
@@ -73,12 +86,13 @@ class ConceptSort(db.Model):
 	participant_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Participant.id), index=True)
 	action_time: so.Mapped[datetime] = so.mapped_column()
 	update_value: so.Mapped[str] = so.mapped_column(sa.String(8))
-	sample_id: so.Mapped[int] = so.mapped_column()
+	game_id: so.Mapped[int] = so.mapped_column()
+	sample_number: so.Mapped[int] = so.mapped_column()
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Action {self.id}, {self.participant_id}, {self.action_time}, {self.update_value}, {self.sample_id}>'
+		return f'<Action {self.id}, participant_id:{self.participant_id}, action_time:{self.action_time}, update_value:{self.update_value}, game_id:{self.game_id}, sample_number:{self.sample_number}>'
 
 
 class Sample(db.Model):
@@ -95,7 +109,7 @@ class Sample(db.Model):
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Sample {self.id}, {self.participant_id}, {self.participant_malignant}, {self.model_malignant}, {self.ai_use}, {self.start_time}, {self.complete_time}>'
+		return f'<Sample {self.id}, {self.participant_id}, {self.participant_move}, {self.model_move}, {self.ai_use}, {self.score}, {self.start_time}, {self.complete_time}>'
 
 
 class Survey(db.Model):

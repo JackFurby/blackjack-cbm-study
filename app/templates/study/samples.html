@@ -33,18 +33,6 @@
 	</div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
 <main class="col px-md-4">
 	<div class="bg-white p-3 mt-4 rounded-3 overflow-hidden">
 
@@ -60,7 +48,7 @@
 									AI suggestion
 									</div>
 									<div class="card-body">
-										<p class="card-text" id="task-out"></p>
+										<p class="card-text">The AI suggests you should <b id="task-out"></b> because you have a <b id="hard_soft_out">xxx</b> hand with a value of <b id="player_value_out">xxx</b> and the dealer has a card with the value of <b id="dealer_card_out">xxx</b>.</p>
 									</div>
 								</div>
 							</div>
@@ -113,8 +101,6 @@
 
 			<h4>AI detected concepts</h4>
 
-			<p>The AI thinks you should <b>xxx</b> because you have a <b>xxx</b> hand with a value of <b>xxx</b> and the dealer has a hand value of <b>xxx</b>.</p>
-
 			<label for="concept_order" class="form-label">Concept order</label>
 			<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
 				<option selected value="hl">Highest to lowest concept value</option>
@@ -143,7 +129,7 @@
 											<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 										</div>
 										<div class="flex-grow-1 mx-2">
-											<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', false);">
+											<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', {{ sample_number }}, false);">
 										</div>
 										<div class="">
 											<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
@@ -172,7 +158,7 @@
 														<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
 													</div>
 													<div class="flex-grow-1 mx-2">
-														<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', false);">
+														<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', {{ sample_number }}, false);">
 													</div>
 													<div>
 														<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p
@@ -211,7 +197,7 @@
 		document.getElementById(input_id).value = initial_value;
 		document.getElementById(input_id + "-reset").disabled = true;
 		document.getElementById(input_id + "-badge").innerHTML = initial_value;
-		logUpdate(input_id, game_id, true);
+		logUpdate(input_id, game_id, sample_number, true);
 	};
 
 	// enabe reset button
@@ -226,7 +212,7 @@
 	};
 
 	// log user changes to concept predictions
-	async function logUpdate(concept_id, game_id, reset_pressed) {
+	async function logUpdate(concept_id, game_id, sample_number, reset_pressed) {
 
 		action_time = Date.now();
 
@@ -242,8 +228,9 @@
 				update_value: document.getElementById(concept_id).value,  // range html object id is the same as the concept id
 				concept_id: concept_id,
 				game_id: game_id,
+				sample_number: sample_number,
 				reset_pressed: reset_pressed,
-				model_malignant: model_pred
+				model_move: model_pred
 			}
 		});
 
@@ -265,6 +252,7 @@
 						action_time: Date.now(),
 						concept_id: concept_id,
 						game_id: game_id,
+						sample_number: sample_number,
 					}
 				});
 			}
@@ -295,17 +283,87 @@
 		// Get index of highest value in downsream task predictions
 		const task_output = results["7"].data;
 		var maxNum = Math.max.apply(null, task_output);
-		var index = task_output.indexOf(maxNum);
+		var task_index = task_output.indexOf(maxNum);
 
 		// update task out prediction displayed
-		if (index == 0) {
-			var model_out = "hit"
-		} else if (index == 1) {
-			var model_out = "stand"
+		if (task_index == 0) {
+			var model_task_out = "hit"
+		} else if (task_index == 1) {
+			var model_task_out = "stand"
 		} else {
-			var model_out = "surrender"
+			var model_task_out = "surrender"
 		};
-		document.getElementById("task-out").innerHTML = model_out;
+		document.getElementById("task-out").innerHTML = model_task_out;
+
+		// update soft/hard hand out
+		if (concept_vec[0] > concept_vec[1]) {
+			var model_concept_out = "soft"
+		} else {
+			var model_concept_out = "hard"
+		};
+		document.getElementById("hard_soft_out").innerHTML = model_concept_out;
+
+		// update player value out
+		const player_values = concept_vec.slice(2, 17);
+		let i = player_values.indexOf(Math.max(...player_values));
+		if (i == 0) {
+			var model_concept_out = "21 or over"
+		} else if (i == 1) {
+			var model_concept_out = "21"
+		} else if (i == 2) {
+			var model_concept_out = "20"
+		} else if (i == 3) {
+			var model_concept_out = "19"
+		} else if (i == 4) {
+			var model_concept_out = "18"
+		} else if (i == 5) {
+			var model_concept_out = "17"
+		} else if (i == 6) {
+			var model_concept_out = "16"
+		} else if (i == 7) {
+			var model_concept_out = "15"
+		} else if (i == 8) {
+			var model_concept_out = "14"
+		} else if (i == 9) {
+			var model_concept_out = "13"
+		} else if (i == 10) {
+			var model_concept_out = "12"
+		} else if (i == 11) {
+			var model_concept_out = "11"
+		} else if (i == 12) {
+			var model_concept_out = "10"
+		} else if (i == 13) {
+			var model_concept_out = "9"
+		} else {
+			var model_concept_out = "8 or below"
+		};
+		document.getElementById("player_value_out").innerHTML = model_concept_out;
+
+		// update dealer card out
+		const dealer_cards = concept_vec.slice(17, 27);
+		i = dealer_cards.indexOf(Math.max(...dealer_cards));
+		if (i == 0) {
+			var model_concept_out = "2"
+		} else if (i == 1) {
+			var model_concept_out = "3"
+		} else if (i == 2) {
+			var model_concept_out = "4"
+		} else if (i == 3) {
+			var model_concept_out = "5"
+		} else if (i == 4) {
+			var model_concept_out = "6"
+		} else if (i == 5) {
+			var model_concept_out = "7"
+		} else if (i == 6) {
+			var model_concept_out = "8"
+		} else if (i == 7) {
+			var model_concept_out = "9"
+		} else if (i == 8) {
+			var model_concept_out = "10"
+		} else {
+			var model_concept_out = "1 or 11"
+		};
+		document.getElementById("dealer_card_out").innerHTML = model_concept_out;
 
 		// log model prediction (will only update db on first log)
 		$.ajax({
@@ -313,11 +371,12 @@
 			url:'{{ url_for('study.model_prediction') }}',
 			data:{
 				game_id: game_id,
-				model_malignant: model_out,
+				sample_number: sample_number,
+				model_move: task_index,
 			}
 		});
 
-		return model_out
+		return task_index
 	};
 
 	//https://bootstrap-menu.com/detail-fixed-onscroll.html
@@ -363,6 +422,7 @@
 					action_time: action_time,
 					update_value: orderby,
 					game_id: game_id,
+					sample_number: sample_number,
 				}
 			});
 		};
@@ -381,6 +441,7 @@
 					action_time: action_time,
 					concept_id: {{ concept_id }},
 					game_id: game_id,
+					sample_number: sample_number,
 				}
 			});
 		})
@@ -396,6 +457,7 @@
 					action_time: action_time,
 					concept_id: {{ concept_id }},
 					game_id: game_id,
+					sample_number: sample_number,
 				}
 			});
 		})
