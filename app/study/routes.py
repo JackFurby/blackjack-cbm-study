@@ -151,7 +151,10 @@ def samples():
 			return redirect(url_for('study.sample_survey'))
 
 		# get sum of game scores
-		total_score = db.session.query(func.sum(Game.score)).filter(Game.participant_id==session["participant_id"]).all()
+		total_score = (db.session.query(func.sum(Game.score)).filter(Game.participant_id==session["participant_id"]).all())[0][0]
+
+		if total_score == None:
+			total_score = 0
 
 		# get game id
 		games_left = session["games_left"]
@@ -306,7 +309,7 @@ def game_end():
 	db.session.add(game)
 	db.session.commit()
 
-	total_score = db.session.query(func.sum(Game.score)).filter(Game.participant_id==session["participant_id"]).all()
+	total_score = (db.session.query(func.sum(Game.score)).filter(Game.participant_id==session["participant_id"]).all())[0][0]
 
 	# clear game data from cookies
 	del games_left[-1]
@@ -316,7 +319,7 @@ def game_end():
 	# we return the sample number of the last player card draw and the final sample in the game. In the interface we show the dealer cards part of the last sample, and the
 	# player cards of the last player card draw
 
-	return render_template('study/game_end.html', title='CBM Study', game_id=game_id, player_sample_number=last_player_sample, dealer_sample_number=dealer_sample_number, score=score, total_score=total_score)
+	return render_template('study/game_end.html', title='CBM Study', game_id=game_id, player_sample_number=last_player_sample, dealer_sample_number=dealer_sample_number, score=score, total_score=total_score, player_total=player_total, dealer_total=dealer_total)
 
 
 # log what the model predicts for the downstream task (discard the log if the value has already been set)
