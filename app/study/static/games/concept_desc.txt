@@ -1,28 +1,28 @@
-The players hand has an ace with the value of 11
-The players hand does not have an ace with the value of 11
-The players hand has the card value of 21 or over
-The players hand has the card value of 21
-The players hand has the card value of 20
-The players hand has the card value of 19
-The players hand has the card value of 18
-The players hand has the card value of 17
-The players hand has the card value of 16
-The players hand has the card value of 15
-The players hand has the card value of 14
-The players hand has the card value of 13
-The players hand has the card value of 12
-The players hand has the card value of 11
-The players hand has the card value of 10
-The players hand has the card value of 9
-The players hand has the card value of 8 or lower
-The dealer hand has the card value of 2
-The dealer hand has the card value of 3
-The dealer hand has the card value of 4
-The dealer hand has the card value of 5
-The dealer hand has the card value of 6
-The dealer hand has the card value of 7
-The dealer hand has the card value of 8
-The dealer hand has the card value of 9
-The dealer hand has the card value of 10
-The dealer hand has an ace
-The dealer hand has more than one card
+Soft hand, The players hand has an ace which can have the valuee of 11
+Hard hand, The players hand does not have an ace which can have the valuee of 11
+Player hand value over 21, The sum of cards in the player hand is over 21
+Player hand value is 21, The sum of cards in the player hand is 21
+Player hand value is 20, The sum of cards in the player hand is 20
+Player hand value is 19, The sum of cards in the player hand is 19
+Player hand value is 18, The sum of cards in the player hand is 18
+Player hand value is 17, The sum of cards in the player hand is 17
+Player hand value is 16, The sum of cards in the player hand is 16
+Player hand value is 15, The sum of cards in the player hand is 15
+Player hand value is 14, The sum of cards in the player hand is 14
+Player hand value is 13, The sum of cards in the player hand is 13
+Player hand value is 12, The sum of cards in the player hand is 12
+Player hand value is 11, The sum of cards in the player hand is 11
+Player hand value is 10, The sum of cards in the player hand is 10
+Player hand value is 9, The sum of cards in the player hand is 9
+Player hand value is 8 or lower, The sum of cards in the player hand is 8 or lower
+Dealer card value is 2, The dealer hand has the card with a value of 2
+Dealer card value is 3, The dealer hand has the card with a value of 3
+Dealer card value is 4, The dealer hand has the card with a value of 4
+Dealer card value is 5, The dealer hand has the card with a value of 5
+Dealer card value is 6, The dealer hand has the card with a value of 6
+Dealer card value is 7, The dealer hand has the card with a value of 7
+Dealer card value is 8, The dealer hand has the card with a value of 8
+Dealer card value is 9, The dealer hand has the card with a value of 9
+Dealer card value is 10, The dealer hand has the card with a value of 10
+Dealer has an ace, The dealer hand has an ace
+Dealer has multiple cards, The dealer hand has more than one card

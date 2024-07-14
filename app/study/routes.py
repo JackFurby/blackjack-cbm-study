@@ -72,7 +72,7 @@ def survey():
 			db.session.add(demographic)
 			db.session.commit()
 
-			explanatons_list = [0, 1]  # 0: no saliency maps, 1: saliency maps
+			explanatons_list = [0, 1, 2, 3]
 
 			participant = Participant(
 				explanation_version=random.choice(explanatons_list)  # explanation version chosen randomly. This should give us an even split between the two
@@ -191,13 +191,15 @@ def samples():
 			content = (f.read().decode('latin1').strip()).split("\n")
 			for line in content:
 				concept = line.split(" ")
-				concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()])  # concept index, concept explanation file name, concept prediction, concept string
+				concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip())])  # concept index, concept explanation file name, concept prediction, concept string
 
 		# open txt file with concept predictions and concept explanation file names
 		with bp.open_resource(f"{bp.static_folder}/games/concept_desc.txt") as f:
 			content = (f.read().decode('latin1').strip()).split("\n")
 			for idx, line in enumerate(content):
-				concept_preds[idx].append(line)  # Add concept description to concept item
+				line = [i.strip() for i in line.split(',')]  # concept string, concept description
+				concept_preds[idx].append(line[0])  # Add concept string to concept item
+				concept_preds[idx].append(line[1])  # Add concept description to concept item
 
 		model_name = "blackjack_CtoY_onnx_model.onnx"
 
@@ -205,12 +207,13 @@ def samples():
 		explanation versions
 		====================
 
-		0 = Concept predictions only (with the option to show saliency maps???)
-		1 = Concept predictions and saliency maps
-		2 = Concept predictions + explanation by example
+		0 = Only downstram task output
+		1 = Only downstream task and concept outputs (no interventions)
+		2 = Downstream task output, concepts outputs, and interventions
+		3 = Downstream task output, concepts outputs, interventions
 		"""
 
-		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=session["explanation_version"], total_score=total_score)
+		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=2, total_score=total_score)  #explanation_version=session["explanation_version"]
 	else:
 		return redirect(url_for('study.survey'))
 
