@@ -57,7 +57,7 @@ class DemographicForm(FlaskForm):
 
 class SampleForm(FlaskForm):
 	ai_use = MultiCheckboxField('Select all that apply', choices=[(1, "I was influenced by the AI’s suggestion"), (2, "I was influenced by the concepts the AI detected"), (3, "I was not influenced by the AI")], validators=[MultiCheckboxAtLeastOne(), MultiCheckboxNotMoreThan(max=2)], validate_choice=False)
-	participant_move = RadioField('Make your move', choices=[(0, "hit"), (1, "stand"), (2, "surrender")], validators=[DataRequired()])
+	participant_move = RadioField('Make your move', choices=[(0, "Hit"), (1, "Stand"), (2, "Surrender")], validators=[DataRequired()])
 
 
 class SurveyForm(FlaskForm):

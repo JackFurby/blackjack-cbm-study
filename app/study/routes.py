@@ -132,7 +132,7 @@ def samples():
 		db.session.add(sample)
 		db.session.commit()
 
-		# if bust, stand or surrender then remove game_id from games_left
+		# if bust (3?), stand (1) or surrender (2) then remove game_id from games_left
 		if request.form['participant_move'] in ["1", "2", "3"]:
 			return redirect(url_for('study.game_end', last_player_sample=samples_left[0], player_move=request.form['participant_move']))
 
@@ -174,6 +174,20 @@ def samples():
 		if len(samples_left) < 3:
 			return redirect(url_for('study.game_end', last_player_sample=samples_left[0], player_move=-1))
 
+		# get player total
+		with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{sample_number}/info.txt") as f:
+			content = (f.read().decode('latin1').strip()).split("\n")
+			lines = []
+			for line in content:
+				line = line.split(" ")
+				lines.append([line[0].strip(), line[1].strip()])  # player/dealer, score
+
+			# get whether the move was the first move of the game
+			if lines[2][1] == "True":
+				first_move = True
+			else:
+				first_move = False
+
 		# if sample does not exist in db (first time sample is show to participant) then create db entery
 		if db.session.query(Sample).filter_by(participant_id=session["participant_id"], game_id=game_id, sample_number=sample_number).first() is None:
 			sample = Sample(
@@ -213,7 +227,7 @@ def samples():
 		3 = Downstream task output, concepts outputs, interventions
 		"""
 
-		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=2, total_score=total_score)  #explanation_version=session["explanation_version"]
+		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=3, total_score=total_score, first_move=first_move)  #explanation_version=session["explanation_version"]
 	else:
 		return redirect(url_for('study.survey'))
 
@@ -232,7 +246,7 @@ def game_end():
 	game_id = games_left[-1]
 
 	# get player total
-	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{last_player_sample}/score.txt") as f:
+	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{last_player_sample}/info.txt") as f:
 		content = (f.read().decode('latin1').strip()).split("\n")
 		lines = []
 		for line in content:
@@ -241,8 +255,14 @@ def game_end():
 
 		player_total = int(lines[0][1])
 
+		# get whether the move was the first move of the game
+		if lines[2][1] == "True":
+			first_move = True
+		else:
+			first_move = False
+
 	# get dealer total
-	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{dealer_sample_number}/score.txt") as f:
+	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{dealer_sample_number}/info.txt") as f:
 		content = (f.read().decode('latin1').strip()).split("\n")
 		lines = []
 		for line in content:
@@ -274,7 +294,11 @@ def game_end():
 
 
 	"""
-	if player_move == 2:  # surrender (move==2) always gets -25 points
+	if (first_move != True) and (player_move == 2):
+		player_move = 1  # if surrender is used when its not the first move then treat it like a stand
+
+
+	if player_move == 2:  # surrender (move==2) always gets -25 points if first move
 		score = -25
 
 	elif dealer_total > 21:
@@ -466,6 +490,10 @@ def toggle_concept_desc():
 # clear session data
 @bp.route('/clear_session')
 def clear_session():
+	try:
+		del session["first_move"]
+	except Exception as e:
+		print(f"Could not delete: {e}")
 	try:
 		del session["games_left"]
 	except Exception as e:

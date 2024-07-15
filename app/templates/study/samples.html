@@ -451,28 +451,18 @@
 		})
 	{% endfor %}
 
-	// image zoom
-	var imageZoomMainOptions = {
-		fillContainer: true,
-		offset: {vertical: 0, horizontal: 0},
-		zoomPosition: "bottom",
-		zoomStyle: "z-index: 999;",
-	};
-
 	var imageZoomExplainOptions = {
 		fillContainer: true,
-		scale: 1.1,
-		zoomWidth: 300,
-		width: 200,
-		height: 200,
+		scale: 2,
+		zoomWidth: 200,
+		width: 125,
+		height: 125,
 		offset: {vertical: 0, horizontal: 0},
 		zoomPosition: "bottom",
 		zoomStyle: "z-index: 999;",
 	};
 
-	//new ImageZoom(document.getElementById("input_img_container"), imageZoomMainOptions);
-
-	{% if explanation_version == 1 %}
+	{% if explanation_version == 3 %}
 		{% for concept in concept_out %}
 			new ImageZoom(document.getElementById("{{ concept[0] }}_img_container"), imageZoomExplainOptions);
 		{% endfor %}
@@ -490,6 +480,16 @@
 		document.getElementById("ai_use-0").checked = false;
 		document.getElementById("ai_use-1").checked = false;
 		document.getElementById("ai_use-2").checked = false;
+
+		// Only allow surrender on the first move
+		{% if first_move == False %}
+			document.getElementById("participant_move-2").disabled = true;
+		{% endif %}
+
+		// delete option if explanation version does not require it
+		{% if explanation_version == 0 or explanation_version == 1 %}
+			document.getElementById("ai_use-1").parentElement.remove();
+		{% endif %}
 	};
 
 </script>
