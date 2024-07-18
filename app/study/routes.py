@@ -95,21 +95,19 @@ def tutorial():
 	# get concept predictions and explanatons
 	concept_preds = []
 	# open txt file with concept predictions and concept explanation file names
-	"""
-	with bp.open_resource(f"static/tutorial/out.txt") as f:
+	with bp.open_resource(f"{bp.static_folder}/tutorial/out.txt") as f:
 		content = (f.read().decode('latin1').strip()).split("\n")
 		for line in content:
 			concept = line.split(" ")
-			concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip()), concept[3].strip()])  # concept index, concept explanation file name, concept prediction, concept string
-	"""
+			concept_preds.append([int(concept[0].strip()), concept[1].strip(), float(concept[2].strip())])  # concept index, concept explanation file name, concept prediction, concept string
 
 	# open txt file with concept predictions and concept explanation file names
-	"""
-	with bp.open_resource(f"static/samples/concept_desc.txt") as f:
+	with bp.open_resource(f"{bp.static_folder}/games/concept_desc.txt") as f:
 		content = (f.read().decode('latin1').strip()).split("\n")
 		for idx, line in enumerate(content):
-			concept_preds[idx].append(line)  # Add concept description to concept item
-	"""
+			line = [i.strip() for i in line.split(',')]  # concept string, concept description
+			concept_preds[idx].append(line[0])  # Add concept string to concept item
+			concept_preds[idx].append(line[1])  # Add concept description to concept item
 
 	model_name = "blackjack_CtoY_onnx_model.onnx"
 
@@ -146,6 +144,8 @@ def samples():
 			games = [int(i) for i in next(os.walk(f"{bp.static_folder}/games"))[1]]
 			random.shuffle(games)
 			session["games_left"] = games
+
+			session["ai_free"] = True
 
 		if len(session["games_left"]) == 0:  # if all games seen; end study and go to closing survey
 			return redirect(url_for('study.sample_survey'))
@@ -217,6 +217,11 @@ def samples():
 
 		model_name = "blackjack_CtoY_onnx_model.onnx"
 
+		if session["ai_free"]:
+			explanation_version = 4
+		else:
+			explanation_version = session["explanation_version"]
+
 		"""
 		explanation versions
 		====================
@@ -225,9 +230,10 @@ def samples():
 		1 = Only downstream task and concept outputs (no interventions)
 		2 = Downstream task output, concepts outputs, and interventions
 		3 = Downstream task output, concepts outputs, interventions
+		4 = No AI (only used for first game)
 		"""
 
-		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=3, total_score=total_score, first_move=first_move)  #explanation_version=session["explanation_version"]
+		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=explanation_version, total_score=total_score, first_move=first_move)
 	else:
 		return redirect(url_for('study.survey'))
 
@@ -332,6 +338,7 @@ def game_end():
 		participant_id=int(session["participant_id"]),
 		game_id=game_id,
 		score=score,
+		ai_enabled= False if session["ai_free"] else True
 	)
 	db.session.add(game)
 	db.session.commit()
@@ -342,6 +349,7 @@ def game_end():
 	del games_left[-1]
 	del session["game_samples"]
 	session["games_left"] = games_left
+	session["ai_free"] = False
 
 	# we return the sample number of the last player card draw and the final sample in the game. In the interface we show the dealer cards part of the last sample, and the
 	# player cards of the last player card draw

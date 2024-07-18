@@ -8,28 +8,83 @@
 	<div class="container-fluid" style="max-width: 1500px;">
 		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
 			<h1 class="mb-0 text-white">Blackjack</h1>
-			<h1 class="mb-0">
-				<span class="badge border border-5 border-white rounded-3">Score: {{ total_score }}</span></h1>
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<a class="btn btn-outline-light border-5" data-bs-toggle="collapse" href="#collapseRules" role="button" aria-expanded="false" aria-controls="collapseRules"><h1 class="mb-0 h2">Rules</h1></a>
+				<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Score: {{ total_score }}</span></h1>
+			</div>
 		</div>
 
 		<hr class="border border-5 border-white rounded-3 opacity-100">
 
+		<div class="collapse" id="collapseRules">
+			<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden">
+
+				<h2>How to play</h2>
+
+				<p>At the beginning of the game, you will be dealt two cards, and the dealer will be dealt one card.</p>
+
+				<p>You will have the option to ask for another card (hit) or stick with the cards you have (stick).</p>
+
+				<p>Your aim is to get the sum of your cards as close to 21 as you can without going over. If you get exactly 21 with your cards, you have achieved a Blackjack!</p>
+
+				<p>You can continue asking for more cards until you go over 21.</p>
+
+				<p>After you have finished taking cards, the dealer will play. Once the dealer reaches a hand that sums to 17 or more, they will stick.</p>
+
+				<h2>Moves</h2>
+
+				<ul>
+					<li>Hit: Get another card.</li>
+					<li>Stick: Keep the cards you have and end your turn.</li>
+					<li>Surrender: If it is your first move, you can give up your hand and lose half the points of a full loss.</li>
+				</ul>
+
+				<h2>Scoring</h2>
+
+				<ul>
+					<li>Blackjack: +75 points</li>
+					<li>Win: +50 points</li>
+					<li>Surrender: -25 points</li>
+					<li>Lose: -50 points</li>
+					<li>Tie: 0 points</li>
+					<li>Dealer and you both go over 21: 0 points</li>
+				</ul>
+
+				<h2>Additional Rules</h2>
+
+				<ul>
+					<li>If both you and the dealer have the same total (including 21), it is a tie.</li>
+					<li>The dealer must hit until their cards total 17 or more.</li>
+					<li>An Ace can count as 1 or 11.</li>
+					<li>Face cards (Jack, Queen, King) each count as 10.</li>
+					<li>All other cards count as their face value.</li>
+					<li>Cards will be drawn from a single standard deck of 52 playing cards.</li>
+				</ul>
+
+				{% if explanation_version == 4 %}
+				<h2>The first game (this one)</h2>
+				For the first game you will not have access to the AI assistant.
+				{% endif %}
+			</div>
+		</div>
+
+
 		<div class="row">
-			<div class="col-8" id="input_img_container">
+			<div class="col-md-12 col-lg-8" id="input_img_container">
 				<h3 class="text-white mt-3">Dealers cards</h3>
 				<div class="border border-5 border-white dealer_cards_container my-3 rounded-3 overflow-hidden">
 					<img class="dealer_cards" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/dealer_cards.jpeg') }}" width="100%">
 				</div>
 				<h3 class="text-white mt-3">Players cards</h3>
-				<div class="border border-5 border-white player_cards_container my-3 rounded-3 overflow-hidden">
+				<div class="border border-5 border-white player_cards_container mt-3 rounded-3 overflow-hidden">
 					<img class="player_cards" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/player_cards.jpeg') }}" width="100%">
 				</div>
 
-				<div class="bg-white p-3 rounded-3 overflow-hidden">
+				<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
 
 					<form action="" method="post" class="mb-3 mx-2" autocomplete="off" id="sample-submit-form">
 						{{ form.hidden_tag() }}
-						<p class="h6">Label the sample</p>
+						<p class="h6">Make your move</p>
 						<div class="mb-3">
 							{% for subfield in form.participant_move %}
 								<div class="form-check">
@@ -38,26 +93,28 @@
 								</div>
 							{% endfor %}
 						</div>
-						<p class="h6">Select all that apply
-							<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
-								<i class="bi bi-question-circle-fill"></i>
-							</button>
-						</p>
-						<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
-							<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you label the sample.</p>
-							<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you label the sample.</p>
-							<p><b>I was not influenced by the AI</b>: You labelled the sample without looking at the AI outputs.</p>
-						</div>
-						{% for error in form.ai_use.errors %}
-							<p class="text-danger">{{ error }}</p>
-						{% endfor %}
-						<div class="mb-3">
-							{% for subfield in form.ai_use %}
-								<div class="form-check">
-									{{ subfield (class_="form-check-input") }}
-									{{ subfield.label (class_="form-check-label") }}
-								</div>
+						<div id="ai-use-options">
+							<p class="h6">Select all that apply
+								<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+									<i class="bi bi-question-circle-fill"></i>
+								</button>
+							</p>
+							<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
+								<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
+								<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
+								<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
+							</div>
+							{% for error in form.ai_use.errors %}
+								<p class="text-danger">{{ error }}</p>
 							{% endfor %}
+							<div class="mb-3">
+								{% for subfield in form.ai_use %}
+									<div class="form-check">
+										{{ subfield (class_="form-check-input") }}
+										{{ subfield.label (class_="form-check-label") }}
+									</div>
+								{% endfor %}
+							</div>
 						</div>
 						<div class="">
 							<button type="submit" name=submit class="btn btn-primary">Submit</button>
@@ -66,102 +123,104 @@
 				</div>
 			</div>
 
-			<div class="col-4">
-				<h3 class="text-white mt-3">AI helper</h3>
-				<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden">
-					<div id="ai-prediction">
-						<div class="card border-info">
-							<div class="card-header">
-							AI suggestion
-							</div>
-							<div class="card-body">
-								{% if explanation_version == 0 %}
-									<p class="card-text">The AI suggests you should <b id="task-out"></b>.</p>
-								{% else %}
-								<p class="card-text">The AI suggests you should <b id="task-out"></b> because you have a <b id="hard_soft_out">xxx</b> hand with a value of <b id="player_value_out">xxx</b> and the dealer has a card with the value of <b id="dealer_card_out">xxx</b>.</p>
-								{% endif %}
-							</div>
-						</div>
-					</div>
-
-					{% if explanation_version == 2 or explanation_version == 3 %}
-						<h4 class="mt-3">AI detected concepts</h4>
-
-						<label for="concept_order" class="form-label">Concept order</label>
-						<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
-							<option selected value="hl">Highest to lowest concept value</option>
-							<option value="lh">Lowest to highest concept value</option>
-						</select>
-						<div class="row" id="all_explanations">
-							{% for concept in concept_out %}
-								{% set concept_id = concept[0] %}
-
-								<div class="col-12" id="explanation_{{ concept_id }}">
-									<div class="card mb-3">
-										{% if explanation_version == 2 %}
-											<div class="card-body">
-												<div class="d-flex justify-content-between">
-													<p class="card-text mb-0">{{ concept[3] }}</p>
-													<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
-														<i class="bi bi-question-circle-fill"></i>
-													</button>
-												</div>
-												<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc_{{ concept_id }}">
-													<p>{{ concept[4] }}</p>
-												</div>
-												<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-												<div class="d-flex">
-													<div>
-														<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
-													</div>
-													<div class="flex-grow-1 mx-2">
-														<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', {{ sample_number }}, false);">
-													</div>
-													<div class="">
-														<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-													</div>
-												</div>
-											</div>
-										{% elif explanation_version == 3 %}
-											<div class="row g-0">
-												<div class="col-md-4" id="{{ concept_id }}_img_container">
-													<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/' + concept[1]|string) }}">
-												</div>
-												<div class="col-md-8">
-													<div class="card-body">
-															<div class="d-flex justify-content-between">
-																<p class="card-text mb-0">{{ concept[3] }}</p>
-																<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
-																	<i class="bi bi-question-circle-fill"></i>
-																</button>
-															</div>
-															<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc_{{ concept_id }}">
-																<p>{{ concept[4] }}</p>
-															</div>
-															<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-															<div class="d-flex">
-																<div>
-																	<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
-																</div>
-																<div class="flex-grow-1 mx-2">
-																	<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', {{ sample_number }}, false);">
-																</div>
-																<div>
-																	<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p
-																</div>
-															</div>
-													</div>
-												</div>
-											</div>
-										{% endif %}
-									</div>
+			{% if explanation_version != 4 %}
+				<div class="col-md-12 col-lg-4">
+					<h3 class="text-white mt-3">AI helper</h3>
+					<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden">
+						<div id="ai-prediction">
+							<div class="card border-info">
+								<div class="card-header">
+								AI suggestion
 								</div>
-
-							{% endfor %}
+								<div class="card-body">
+									{% if explanation_version == 0 %}
+										<p class="card-text">The AI suggests you should <b id="task-out"></b>.</p>
+									{% else %}
+									<p class="card-text">The AI suggests you should <b id="task-out"></b> because you have a <b id="hard_soft_out">xxx</b> hand with a value of <b id="player_value_out">xxx</b> and the dealer has a card with the value of <b id="dealer_card_out">xxx</b>.</p>
+									{% endif %}
+								</div>
+							</div>
 						</div>
-					{% endif %}
+
+						{% if explanation_version == 2 or explanation_version == 3 %}
+							<h4 class="mt-3">AI detected concepts</h4>
+
+							<label for="concept_order" class="form-label">Concept order</label>
+							<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+								<option selected value="hl">Highest to lowest concept value</option>
+								<option value="lh">Lowest to highest concept value</option>
+							</select>
+							<div class="row" id="all_explanations">
+								{% for concept in concept_out %}
+									{% set concept_id = concept[0] %}
+
+									<div class="col-12" id="explanation_{{ concept_id }}">
+										<div class="card mb-3">
+											{% if explanation_version == 2 %}
+												<div class="card-body">
+													<div class="d-flex justify-content-between">
+														<p class="card-text mb-0">{{ concept[3] }}</p>
+														<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+															<i class="bi bi-question-circle-fill"></i>
+														</button>
+													</div>
+													<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc_{{ concept_id }}">
+														<p>{{ concept[4] }}</p>
+													</div>
+													<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+													<div class="d-flex">
+														<div>
+															<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+														</div>
+														<div class="flex-grow-1 mx-2">
+															<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', {{ sample_number }}, false);">
+														</div>
+														<div class="">
+															<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+														</div>
+													</div>
+												</div>
+											{% elif explanation_version == 3 %}
+												<div class="row g-0">
+													<div class="col-md-4" id="{{ concept_id }}_img_container">
+														<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/' + concept[1]|string) }}">
+													</div>
+													<div class="col-md-8">
+														<div class="card-body">
+																<div class="d-flex justify-content-between">
+																	<p class="card-text mb-0">{{ concept[3] }}</p>
+																	<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+																		<i class="bi bi-question-circle-fill"></i>
+																	</button>
+																</div>
+																<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc_{{ concept_id }}">
+																	<p>{{ concept[4] }}</p>
+																</div>
+																<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+																<div class="d-flex">
+																	<div>
+																		<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+																	</div>
+																	<div class="flex-grow-1 mx-2">
+																		<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ game_id }}', {{ sample_number }}, false);">
+																	</div>
+																	<div>
+																		<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+																	</div>
+																</div>
+														</div>
+													</div>
+												</div>
+											{% endif %}
+										</div>
+									</div>
+
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
 				</div>
-			</div>
+			{% endif %}
 
 	</div>
 
@@ -489,6 +548,17 @@
 		// delete option if explanation version does not require it
 		{% if explanation_version == 0 or explanation_version == 1 %}
 			document.getElementById("ai_use-1").parentElement.remove();
+		{% endif %}
+
+		// explanation_version 4 means there is no AI used
+		{% if (explanation_version == 4) %}
+			// check AI use and hide options
+			document.getElementById("ai_use-2").checked = true;
+			document.getElementById("ai-use-options").style.display = 'none';
+			// open the rules on the first game
+			{% if (first_move == True) %}
+				document.getElementById('collapseRules').classList.add("show");
+			{% endif %}
 		{% endif %}
 	};
 

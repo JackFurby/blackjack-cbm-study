@@ -55,11 +55,12 @@ class Game(db.Model):
 	participant_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(Participant.id), index=True)
 	game_id: so.Mapped[int] = so.mapped_column()
 	score: so.Mapped[Optional[int]] = so.mapped_column()
+	ai_enabled: so.Mapped[bool] = so.mapped_column(sa.Boolean())
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Game {self.id}>'
+		return f'<Game {self.id}, participant_id:{self.participant_id}, game_id:{self.game_id}, score:{self.score}, ai_enabled:{self.ai_enabled}>'
 
 
 class Action(db.Model):
@@ -109,7 +110,7 @@ class Sample(db.Model):
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
 	def __repr__(self):
-		return f'<Sample {self.id}, {self.participant_id}, {self.participant_move}, {self.model_move}, {self.ai_use}, {self.score}, {self.start_time}, {self.complete_time}>'
+		return f'<Sample {self.id}, participant_id:{self.participant_id}, game_id:{self.game_id}, sample_number:{self.sample_number}, participant_move:{self.participant_move}, model_move:{self.model_move}, ai_use:{self.ai_use}, start_time:{self.start_time}, complete_time:{self.complete_time}>'
 
 
 class Survey(db.Model):

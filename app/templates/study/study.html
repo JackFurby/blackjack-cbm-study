@@ -2,32 +2,33 @@
 
 
 {% block content %}
-<main class="col px-md-4">
-	<div class="bg-white p-3 mt-4">
-		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-			<h1 class="h2">Study</h1>
-		</div>
+<main>
+	<div class="container-fluid" style="max-width: 1500px;">
+		<div class="bg-white p-3 rounded-3 overflow-hidden mt-3">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+				<h1 class="h2">Blackjack Study</h1>
+			</div>
 
-		<div>
-			<p>This is a study to evaluate a machine learning model architecture called a Concept Bottleneck Model, and explainable artificial intelligence techniques. The artificial agent has been trained to predict actions in the game Blckjack.</p>
+			<div>
+				<p>This is a study to evaluate a machine learning model architecture called a Concept Bottleneck Model, and explainable artificial intelligence techniques. The artificial agent has been trained to predict actions in the game Blckjack.</p>
 
-			<p>As a participant, you will be shown a series of images and outputs from the artificial agent and asked to interact with the model to help you classify the images. You will be briefed on the task when you begin the study. The study should take you no more than 30 minutes to complete. Participation in this study is entirely voluntary and you can withdraw from the study at any time.</p>
+				<p>As a participant, you will be shown a series of images and outputs from the artificial agent and asked to interact with the model to help you play the game. You will be briefed on the task when you begin the study. The study should take you no more than 30 minutes to complete. Participation in this study is entirely voluntary and you can withdraw from the study at any time.</p>
 
-			<p>This study is designed and run by Jack Furby, A PhD student in the School of Computer Science and Informatics at Cardiff University under the supervision of Prof Alun Preece.</p>
+				<p>This study is designed and run by Jack Furby, A PhD student in the School of Computer Science and Informatics at Cardiff University under the supervision of Prof Alun Preece.</p>
 
-		</div>
+			</div>
 
-		<div class="alert alert-primary" role="alert">
-			<p>This study has been tested with Chrome and Firefox, although it should function with most browsers. We require cookies and Javascript to be enabled (these are enabled by default with most browsers).</p>
+			<div class="alert alert-primary" role="alert">
+				<p>This study has been tested with Chrome and Firefox, although it should function with most browsers. We require cookies and Javascript to be enabled (these are enabled by default with most browsers).</p>
 
-			<p class="mb-0">During the study, we will track button presses and page elements visible on your screen. Tracking is restricted to just the study platform and will not include any activity outside of the study.</p>
-		</div>
+				<p class="mb-0">During the study, we will track button presses and page elements visible on your screen. Tracking is restricted to just the study platform and will not include any activity outside of the study.</p>
+			</div>
 
-		<div class="">
-			<a class="btn btn-primary" href="{{ url_for('study.forms') }}" role="button">Start study</a>
+			<div class="">
+				<a class="btn btn-primary" href="{{ url_for('study.forms') }}" role="button">Start study</a>
+			</div>
 		</div>
 	</div>
-
 </main>
 
 {% endblock %}

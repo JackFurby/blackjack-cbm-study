@@ -62,13 +62,13 @@ class SampleForm(FlaskForm):
 
 class SurveyForm(FlaskForm):
 	factors_in_data = RadioField('I found that the data included all relevant known causal factors with sufficient precision and granularity', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
-	understood = RadioField('I understood the explanations within the context of my work', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	understood = RadioField('I understood the explanations within the context of the game', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	change_detail_level = RadioField('I could change the level of detail on demand', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	need_support = RadioField('I did not need support to understand the explanations', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
-	understood_causality = RadioField('I found the explanations helped me to understandcausality', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	understood_causality = RadioField('I found the explanations helped me to understand causality', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	use_with_knowledge = RadioField('I was able to use the explanations with my knowledgebase', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	no_inconsistencies = RadioField('I did not find inconsistencies between explanations', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	learn_to_understand = RadioField('I think that most people would learn to understand the explanations very quickly', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
-	need_references = RadioField('I did not need more references in the explanations: e.g., medical guidelines, regulations', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	need_references = RadioField('I did not need more references in the explanations: e.g., strategy guides', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	efficient = RadioField('I received the explanations in a timely and efficient manner', choices=[(5, "Strongly agree"), (4, "agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	text = TextAreaField('Any other comments about the AI and explanations (max 5000 characters. Write "none" if you have no comments)', validators=[DataRequired(), length(max=5000)])

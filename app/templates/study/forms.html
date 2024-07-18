@@ -2,151 +2,153 @@
 
 
 {% block content %}
-<main class="col px-md-4">
-	<div class="bg-white p-3 mt-4">
-		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-			<h1 class="h2">Consent form</h1>
-		</div>
-		<div class="">
+<main>
+	<div class="container-fluid" style="max-width: 1500px;">
+		<div class="bg-white p-3 rounded-3 overflow-hidden mt-3">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+				<h1 class="h2">Consent form</h1>
+			</div>
+			<div class="">
 
-			<p>Title of research project: Concept Bottleneck Models lay-person user study</p>
-			<p>SREC reference and committee: COMSC/Ethics/2023/146</p>
-			<p>Name of Chief/Principal Investigator: Jack Furby</p>
+				<p>Title of research project: Concept Bottleneck Models lay-person user study</p>
+				<p>SREC reference and committee: COMSC/Ethics/2023/146</p>
+				<p>Name of Chief/Principal Investigator: Jack Furby</p>
 
-			<a href="{{ url_for('static', filename='files/PIS.pdf') }}" download>Participant information sheet</a>
+				<a href="{{ url_for('static', filename='files/PIS.pdf') }}" download>Participant information sheet</a>
 
-			<form action="" method="post" class="mt-3">
-				{{ form.hidden_tag() }}
-				<div class="row">
-					<div class="col-10 border pb-2">
-						<p>I confirm that I have read the information sheet dated 2/7/2024 version 3 for the above research project.</p>
+				<form action="" method="post" class="mt-3">
+					{{ form.hidden_tag() }}
+					<div class="row w-100 m-auto">
+						<div class="col-10 border pb-2">
+							<p>I confirm that I have read the information sheet dated 2/7/2024 version 3 for the above research project.</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.read_pis.label (class_="form-label") }}
+							{{ form.read_pis (class_="form-control") }}
+							{% for error in form.read_pis.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
-					<div class="col-2 border pb-2">
-						{{ form.read_pis.label (class_="form-label") }}
-						{{ form.read_pis (class_="form-control") }}
-						{% for error in form.read_pis.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
+					<div class="row w-100 m-auto">
+						<div class="col-10 border pb-2">
+							<p>I confirm that I have understood the information sheet dated 2/7/2024 version 3 for the above research project and that I have had the opportunity to ask questions and that these have been answered satisfactorily.</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.understood_pis.label (class_="form-label") }}
+							{{ form.understood_pis (class_="form-control") }}
+							{% for error in form.understood_pis.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-10 border pb-2">
-						<p>I confirm that I have understood the information sheet dated 2/7/2024 version 3 for the above research project and that I have had the opportunity to ask questions and that these have been answered satisfactorily.</p>
+					<div class="row w-100 m-auto">
+						<div class="col-10 border pb-2">
+							<p>I understand that my participation is voluntary and I am free to withdraw at any time without giving a reason and without any adverse consequences (e.g. to medical care or legal rights, if relevant).</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.participation_voluntary.label (class_="form-label") }}
+							{{ form.participation_voluntary (class_="form-control") }}
+							{% for error in form.participation_voluntary.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
-					<div class="col-2 border pb-2">
-						{{ form.understood_pis.label (class_="form-label") }}
-						{{ form.understood_pis (class_="form-control") }}
-						{% for error in form.understood_pis.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
+					<div class="row w-100 m-auto">
+						<div class="col-10 border pb-2">
+							<p>I understand that my personal information (name and email) will be processed for the purposes explained to me, as set out in the information sheet.  I understand that such information will be held in accordance with all applicable data protection legislation and in strict confidence, unless disclosure is required by law or professional obligation. I have been informed of my rights under data protection legislation and how I can raise any concerns.</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.information_consent.label (class_="form-label") }}
+							{{ form.information_consent (class_="form-control") }}
+							{% for error in form.information_consent.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-10 border pb-2">
-						<p>I understand that my participation is voluntary and I am free to withdraw at any time without giving a reason and without any adverse consequences (e.g. to medical care or legal rights, if relevant).</p>
+					<div class="row w-100 m-auto">
+						<div class="col-10 border pb-2">
+							<p>I understand who will have access to personal information provided, how the data will be stored and what will happen to the data at the end of the research project.</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.data_access.label (class_="form-label") }}
+							{{ form.data_access (class_="form-control") }}
+							{% for error in form.data_access.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
-					<div class="col-2 border pb-2">
-						{{ form.participation_voluntary.label (class_="form-label") }}
-						{{ form.participation_voluntary (class_="form-control") }}
-						{% for error in form.participation_voluntary.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
+					<div class="row w-100 m-auto">
+						<div class="col-10 border pb-2">
+							<p>I understand that anonymised excerpts and/or verbatim quotes from my submission may be used as part of the research publication.</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.anonymised_excerpts.label (class_="form-label") }}
+							{{ form.anonymised_excerpts (class_="form-control") }}
+							{% for error in form.anonymised_excerpts.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-10 border pb-2">
-						<p>I understand that my personal information (name and email) will be processed for the purposes explained to me, as set out in the information sheet.  I understand that such information will be held in accordance with all applicable data protection legislation and in strict confidence, unless disclosure is required by law or professional obligation. I have been informed of my rights under data protection legislation and how I can raise any concerns.</p>
+					<div class="row w-100 m-auto">
+						<div class="col-10 border pb-2">
+							<p>I understand how the findings and results of the research project will be written up and published.</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.results_published.label (class_="form-label") }}
+							{{ form.results_published (class_="form-control") }}
+							{% for error in form.results_published.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
-					<div class="col-2 border pb-2">
-						{{ form.information_consent.label (class_="form-label") }}
-						{{ form.information_consent (class_="form-control") }}
-						{% for error in form.information_consent.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-10 border pb-2">
-						<p>I understand who will have access to personal information provided, how the data will be stored and what will happen to the data at the end of the research project.</p>
-					</div>
-					<div class="col-2 border pb-2">
-						{{ form.data_access.label (class_="form-label") }}
-						{{ form.data_access (class_="form-control") }}
-						{% for error in form.data_access.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-10 border pb-2">
-						<p>I understand that anonymised excerpts and/or verbatim quotes from my submission may be used as part of the research publication.</p>
-					</div>
-					<div class="col-2 border pb-2">
-						{{ form.anonymised_excerpts.label (class_="form-label") }}
-						{{ form.anonymised_excerpts (class_="form-control") }}
-						{% for error in form.anonymised_excerpts.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-10 border pb-2">
-						<p>I understand how the findings and results of the research project will be written up and published.</p>
-					</div>
-					<div class="col-2 border pb-2">
-						{{ form.results_published.label (class_="form-label") }}
-						{{ form.results_published (class_="form-control") }}
-						{% for error in form.results_published.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</div>
-				</div>
-				<div class="row mb-3">
-					<div class="col-10 border pb-2">
-						<p>I agree to take part in this research project.</p>
-					</div>
-					<div class="col-2 border pb-2">
-						{{ form.take_part.label (class_="form-label") }}
-						{{ form.take_part (class_="form-control") }}
-						{% for error in form.take_part.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</div>
-				</div>
-
-				<div class="row mb-5">
-					<div class="col-3 form-group px-3">
-						{{ form.participant_name.label (class_="col-form-label") }}
-						{{ form.participant_name (class_="form-control") }}
-						{% for error in form.participant_name.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</div>
-					<div class="col-2 px-3">
-						<p class="">Date</p>
-						<p class="">{{ date }}</p>
-					</div>
-					<div class="col-4 form-group px-3">
-						{{ form.email.label (class_="col-form-label") }}
-						{{ form.email (class_="form-control") }}
-						{% for error in form.email.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</div>
-					<div class="col-3 form-check px-3">
-						{{ form.keep_me_updated.label (class_="form-check-label") }}
-						{{ form.keep_me_updated (class_="form-check-input") }}
-						{% for error in form.keep_me_updated.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
+					<div class="row w-100 m-auto mb-3">
+						<div class="col-10 border pb-2">
+							<p>I agree to take part in this research project.</p>
+						</div>
+						<div class="col-2 border pb-2">
+							{{ form.take_part.label (class_="form-label") }}
+							{{ form.take_part (class_="form-control") }}
+							{% for error in form.take_part.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 					</div>
 
-				</div>
+					<div class="row mb-5">
+						<div class="col-3 form-group px-3">
+							{{ form.participant_name.label (class_="col-form-label") }}
+							{{ form.participant_name (class_="form-control") }}
+							{% for error in form.participant_name.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
+						<div class="col-2 px-3">
+							<p class="">Date</p>
+							<p class="">{{ date }}</p>
+						</div>
+						<div class="col-4 form-group px-3">
+							{{ form.email.label (class_="col-form-label") }}
+							{{ form.email (class_="form-control") }}
+							{% for error in form.email.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
+						<div class="col-3 form-check px-3">
+							{{ form.keep_me_updated.label (class_="form-check-label") }}
+							{{ form.keep_me_updated (class_="form-check-input") }}
+							{% for error in form.keep_me_updated.errors %}
+								<span style="color: red;">[{{ error }}]</span>
+							{% endfor %}
+						</div>
 
-				<button type="submit" class="btn btn-primary">Submit</button>
-			</form>
+					</div>
 
-			<p>Thank you for participating in our research you will be given a copy of this consent form to keep.<p>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+
+				<p>Thank you for participating in our research you will be given a copy of this consent form to keep.<p>
+			</div>
 		</div>
 	</div>
 

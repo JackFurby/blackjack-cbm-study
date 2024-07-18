@@ -4,145 +4,198 @@
 
 
 {% block content %}
-<main class="col px-md-4">
-	<div class="bg-white p-3 mt-4">
-		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-			<h1 class="h2">Tutorial</h1>
-		</div>
-		<div class="">
+<main>
+	<div class="container-fluid" style="max-width: 1500px;">
+		<div class="bg-white p-3 rounded-3 overflow-hidden mt-3">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+				<h1 class="h2">Tutorial</h1>
+			</div>
 
 			<div class="text-center">
 				<button type="button" class="btn btn-primary btn-lg mx-auto" onclick="startTutorial()">Start tutorial</button>
 				<p class="mt-3">(You can start the study by clicking the button at the bottom of the page)</p>
 			</div>
+		</div>
 
-			<hr />
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+			<h1 class="mb-0 text-white">Blackjack</h1>
+			<h1 class="mb-0">
+				<span class="badge border border-5 border-white rounded-3">Score: 0</span></h1>
+		</div>
 
-			<div class="row" id="sample-layout">
+		<hr class="border border-5 border-white rounded-3 opacity-100">
 
-				<div id="ai-prediction" class="bg-white col-12 col-md-7">
-					<div class="">
-						<div class="container-fluid" style="max-width: 1140px;" id="ai-prediction-position">
-							<div class="row mb-3">
-								<div class="col-12">
-									<div class="m-auto" id="input_img_container">
-										<img class="mb-3 h-auto" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/input.jpeg') }}" width="100%" id="model_input">
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="card border-info mb-3" id="model-output">
-										<div class="card-header">
-										AI prediction
-										</div>
-										<div class="card-body">
-											<p class="card-text" id="task-out"></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div id="sample-classification">
-							<p class="h4 text-center">Please label the sample</p>
-
-							<p class="h6 text-center">Select the option that applies
-								<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
-									<i class="bi bi-question-circle-fill"></i>
-								</button>
-							</p>
-							<div class="collapse border border-info-subtle p-1 rounded" id="collapse_ai_use">
-								<p><b>I used the AI predictions</b>: You looked at, interacted with or agreed with the concept predictions or sample label prediction.</p>
-								<p><b>I did not use AI predictions</b>: You did not look at the AI predictions before labeling the sample.</p>
-							</div>
-
-							<div class="mb-3 text-center">
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" id="ai_use-0" name="ai_use" required="" type="radio" value="1">
-										<label class="form-check-label" for="ai_use-0" id="ai_use_true">I used the AI predictions</label>
-									</div>
-
-									<div class="form-check form-check-inline">
-										<input class="form-check-input" id="ai_use-1" name="ai_use" required="" type="radio" value="2">
-										<label class="form-check-label" for="ai_use-1" id="ai_use_false">I did not use AI predictions</label>
-									</div>
-							</div>
-							<p class="h6 text-center">Label the sample</p>
-							<div class="d-flex justify-content-center">
-								<button type="submit" name="submit" class="btn btn-secondary mx-2" value="malignant">Malignant melanoma</button>
-								<button type="submit" name="submit" class="btn btn-secondary mx-2" value="benign">Seborrheic keratosis</button>
-							</div>
-						</div>
+		<div class="row">
+			<div class="col-md-12 col-lg-8">
+				<div id="input-img-container">
+					<h3 class="text-white mt-3">Dealers cards</h3>
+					<div class="border border-5 border-white dealer-cards-container mt-3 rounded-3 overflow-hidden">
+						<img class="dealer-cards" src="{{ url_for('study.get_image_tutorial', filename='/dealer_cards.jpeg') }}" width="100%">
+					</div>
+					<h3 class="text-white mt-3">Players cards</h3>
+					<div class="border border-5 border-white player-cards-container my-3 rounded-3 overflow-hidden">
+						<img class="player-cards" src="{{ url_for('study.get_image_tutorial', filename='/player_cards.jpeg') }}" width="100%">
 					</div>
 				</div>
 
-				<div class="col-12 col-md-5">
-					<h4 id="concept_list_title">Predicted concepts</h4>
+				<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
+					<p class="h6">Label the sample</p>
+					<div class="mb-3" id="move-select">
 
-					<label for="concept_order" class="form-label">Concept order</label>
-					<select id="concept-order" class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
-						<option selected value="hl">Highest to lowest concept value</option>
-						<option value="lh">Lowest to highest concept value</option>
-					</select>
-					<div class="row" id="all_explanations">
-						{% for concept in concept_out %}
-							{% set concept_id = concept[0] %}
+							<div class="form-check">
+								<input class="form-check-input" id="participant_move-0" name="participant_move" required="" type="radio" value="0">
+								<label class="form-check-label" for="participant_move-0">Hit</label>
+							</div>
 
-							<div class="col-12" id="explanation_{{ concept_id }}">
-								<div class="card mb-3">
-									{% if explanation_version == 0 %}
-										<div class="card-body">
-											<div class="d-flex justify-content-between mb-2">
-												<p class="card-text" id="concept_name_{{ concept_id }}">{{ concept[3] }}</p>
-												<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
-													<i class="bi bi-question-circle-fill"></i>
-												</button>
+							<div class="form-check">
+								<input class="form-check-input" id="participant_move-1" name="participant_move" required="" type="radio" value="1">
+								<label class="form-check-label" for="participant_move-1">Stand</label>
+							</div>
+
+							<div class="form-check">
+								<input class="form-check-input" id="participant_move-2" name="participant_move" required="" type="radio" value="2">
+								<label class="form-check-label" for="participant_move-2">Surrender</label>
+							</div>
+
+					</div>
+					<p class="h6">Select all that apply
+						<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+							<i class="bi bi-question-circle-fill"></i>
+						</button>
+					</p>
+					<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
+						<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
+						<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
+						<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
+					</div>
+
+					<div class="mb-3" id="ai_use-select">
+
+							<div class="form-check">
+								<input class="form-check-input" id="ai_use-0" name="ai_use" type="checkbox" value="1">
+								<label class="form-check-label" for="ai_use-0">I was influenced by the AI’s suggestion</label>
+							</div>
+
+							<div class="form-check">
+								<input class="form-check-input" id="ai_use-1" name="ai_use" type="checkbox" value="2">
+								<label class="form-check-label" for="ai_use-1">I was influenced by the concepts the AI detected</label>
+							</div>
+
+							<div class="form-check">
+								<input class="form-check-input" id="ai_use-2" name="ai_use" type="checkbox" value="3">
+								<label class="form-check-label" for="ai_use-2">I was not influenced by the AI</label>
+							</div>
+
+					</div>
+					<div class="">
+						<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="col-md-12 col-lg-4">
+				<h3 class="text-white mt-3">AI helper</h3>
+				<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden">
+					<div id="ai-prediction">
+						<div class="card border-info">
+							<div class="card-header">
+							AI suggestion
+							</div>
+							<div class="card-body">
+								{% if explanation_version == 0 %}
+									<p class="card-text">The AI suggests you should <b id="task-out"></b>.</p>
+								{% else %}
+								<p class="card-text">The AI suggests you should <b id="task-out"></b> because you have a <b id="hard-soft-out">xxx</b> hand with a value of <b id="player-value-out">xxx</b> and the dealer has a card with the value of <b id="dealer-card-out">xxx</b>.</p>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+
+					{% if explanation_version == 2 or explanation_version == 3 %}
+						<h4 class="mt-3" id="concept-list-title">AI detected concepts</h4>
+
+						<label for="concept_order" class="form-label">Concept order</label>
+						<select class="form-select mb-3" aria-label="concept-order" id="concept-order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+							<option selected value="hl">Highest to lowest concept value</option>
+							<option value="lh">Lowest to highest concept value</option>
+						</select>
+						<div class="row" id="all-explanations">
+							{% for concept in concept_out %}
+								{% set concept_id = concept[0] %}
+
+								<div class="col-12" id="explanation-{{ concept_id }}">
+									<div class="card mb-3">
+										{% if explanation_version == 2 %}
+											<div class="card-body">
+												<div class="d-flex justify-content-between">
+													<p class="card-text mb-0">{{ concept[3] }}</p>
+													<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc-{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc-{{ concept_id }}">
+														<i class="bi bi-question-circle-fill"></i>
+													</button>
+												</div>
+												<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc-{{ concept_id }}">
+													<p>{{ concept[4] }}</p>
+												</div>
+												<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+												<div class="d-flex">
+													<div>
+														<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+													</div>
+													<div class="flex-grow-1 mx-2">
+														<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}');">
+													</div>
+													<div>
+														<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+													</div>
+												</div>
 											</div>
-											<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
-												<p>{{ concept[4] }}</p>
-											</div>
-											<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-											<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
-											<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-											<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
-										</div>
-									{% elif explanation_version == 1 %}
-										<div class="row g-0">
-											<div class="col-md-4" id="{{ concept_id }}_img_container">
-												<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image_tutorial', filename=sample_id|string + '/' + concept[1]|string) }}" id="image_saliency_{{ concept_id }}">
-											</div>
-											<div class="col-md-8">
-												<div class="card-body">
-														<div class="d-flex justify-content-between mb-2">
-															<p class="card-text" id="concept_name_{{ concept_id }}">{{ concept[3] }}</p>
-															<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc_{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc_{{ concept_id }}">
+										{% elif explanation_version == 3 %}
+											<div class="row g-0">
+												<div class="col-md-4" id="{{ concept_id }}-img-container">
+													<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image_tutorial', filename=concept[1]|string) }}">
+												</div>
+												<div class="col-md-8">
+													<div class="card-body">
+														<div class="d-flex justify-content-between">
+															<p class="card-text mb-0">{{ concept[3] }}</p>
+															<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc-{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc-{{ concept_id }}">
 																<i class="bi bi-question-circle-fill"></i>
 															</button>
 														</div>
-														<div class="collapse border border-info-subtle p-1 rounded" id="collapseDesc_{{ concept_id }}">
+														<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc-{{ concept_id }}">
 															<p>{{ concept[4] }}</p>
 														</div>
 														<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-														<input type="range" class="form-range" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}'); logUpdate('{{ concept_id }}', '{{ sample_id }}', false);">
-														<p><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-														<button type="button" class="btn btn-secondary" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+														<div class="d-flex">
+															<div>
+																<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+															</div>
+															<div class="flex-grow-1 mx-2">
+																<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}');">
+															</div>
+															<div>
+																<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+															</div>
+														</div>
+													</div>
 												</div>
 											</div>
-										</div>
-									{% endif %}
+										{% endif %}
+									</div>
 								</div>
-							</div>
 
-						{% endfor %}
-					</div>
+							{% endfor %}
+						</div>
+					{% endif %}
 				</div>
 			</div>
+		</div>
 
-			<hr />
-
-			<div class="d-grid col-6 mx-auto mt-5">
-				<a class="btn btn-primary btn-lg mx-auto" href="{{ url_for('study.samples') }}" id="continue_to_study" role="button">Contine to study</a>
+		<div class="bg-white p-3 rounded-3 overflow-hidden my-3">
+			<div class="d-grid col-6 mx-auto">
+				<a class="btn btn-primary btn-lg mx-auto" href="{{ url_for('study.samples') }}" id="continue-to-study" role="button">Continue to study</a>
 			</div>
-
 		</div>
 	</div>
 
@@ -160,46 +213,41 @@
 		},
 		{
 			title: 'Study aim',
-			intro: 'We have created an artificial intelligence (AI) agent to help you classify skin diseases from images as either <b>malignant melanoma</b> or <b>seborrheic keratosis</b>. The artificial agent is capable of explaining it\'s prediction.'
+			intro: 'We have created an Artificial Intelligence (AI) agent to help you play the game Blackjack.'
 		},
+		{% if (explanation_version == 1) or (explanation_version == 2) or (explanation_version == 3) %}
 		{
 			title: 'Study aim',
-			intro: 'We are measuring the effect these explanations have on you completing the task.'
+			intro: 'The AI is capable of explaining it\'s outputs. We are measuring the effect these explanations have on you playing the game.'
+		},
+		{% endif %}
+		{
+			title: 'Sample hands',
+			element: document.getElementById('input-img-container'),
+			intro: 'You will be presented with your cards and the dealer\'s cards.'
 		},
 		{
-			title: 'Page layout',
-			intro: 'The study will use the same layout as on this page. The sample images will be on the left and explanations on the right.'
+			title: 'AI sugestion',
+			element: document.getElementById('task-out'),
+			intro: 'The AI agent will suggest a move for each card hand.'
 		},
+		{% if (explanation_version == 1) or (explanation_version == 2) or (explanation_version == 3) %}
 		{
-			element: document.getElementById('sample-classification'),
-			intro: 'When you have evaluated the sample you will be asked to label it.'
+			title: 'AI sugestion',
+			element: document.getElementById('ai-prediction'),
+			intro: 'The AI agent is equipt to explain its reasoning for the move it is suggesting you make.'
 		},
+		{% endif %}
+		{% if (explanation_version == 2) or (explanation_version == 3) %}
 		{
-			element: document.getElementById('ai_use_true'),
-			intro: 'Please select this option if you interacted with the AI agent in any way. This could be evaluating the sample prediction, the concept explanations, or modifying concept predictions.'
-		},
-		{
-			element: document.getElementById('ai_use_false'),
-			intro: 'Please select this option if you classified the sample without evaluating any of the AI agents outputs.'
-		},
-		{
-			element: document.getElementById('ai-prediction-position'),
-			intro: 'You will be presented with sample images and AI agent\'s predictions.'
-		},
-		{
-			title: 'AI prediction',
-			element: document.getElementById('model-output'),
-			intro: 'The AI agent classifies samples in a two-step process. It will first predict a series of concepts and then use the concept prediction for the sample classification.'
+			title: 'Concept explanations',
+			element: document.getElementById('concept-list-title'),
+			intro: 'The suggested move is based on the detection of 28 concepts. The concepts can be inspected to explain why a move was suggested.'
 		},
 		{
 			title: 'Concept explanations',
-			element: document.getElementById('concept_list_title'),
-			intro: 'The AI agent predicts 22 concepts.'
-		},
-		{
-			title: 'Concept explanations',
-			element: document.getElementById('concept_list_title'),
-			intro: 'Concepts represent visual observations we may see in a sample image.'
+			element: document.getElementById('concept-list-title'),
+			intro: 'Concepts represent the player\'s hand type, the sum of cards in the player\'s hand, and the card the dealer has.'
 		},
 		{
 			title: 'Concept order',
@@ -207,26 +255,23 @@
 			intro: 'Concepts can be ordered in ascending or descending order based on the concept value. By default, it is ordered in descending order.'
 		},
 		{
-			title: 'Concept name',
-			element: document.getElementById('concept_name_16'),
-			intro: 'The concept name uses a standard lexicon to describe visual observations.'
-		},
-		{
 			title: 'Concept value',
 			element: document.getElementById('16-badge'),
-			intro: 'The AI agent predicts a value for each concept between 0 and 1. Any value of 0.5 and over means the AI agent predicted the concept as present, and a value below 0.5 is not present. This value can be seen as how confident the model was. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
-		},
-		{% if explanation_version == 1 %}
-		{
-			title: 'Explanation saliency',
-			element: document.getElementById('image_saliency_16'),
-			intro: 'Each concept explanation has an image which shows the saliency of what the artificial agent used to make the prediction. Red highlights pixels contributing towards the concept prediction and blue highlights pixels against the concept prediction.'
+			intro: 'The AI agent represents each concept with a value between 0 and 1. Any value of 0.5 and over means the AI agent has detected the concept as present, and a value below 0.5 as not present. This value can be seen as how confident the model is. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
 		},
 		{% endif %}
+		{% if explanation_version == 3 %}
+		{
+			title: 'Explanation saliency',
+			element: document.getElementById('16-img-container'),
+			intro: 'Each concept explanation has an image which shows what the artificial agent used from the sample image. Red highlights regions contributing towards the concept detection and blue highlights regions against the concept detection.'
+		},
+		{% endif %}
+		{% if (explanation_version == 2) or (explanation_version == 3) %}
 		{
 			title: 'Interventions',
 			element: document.getElementById('16'),
-			intro: 'You can modify concept predictions if you believe they are incorrect or wish to see what the artificial agent would predict if they were different.'
+			intro: 'You can modify concepts if you believe they are incorrect or wish to see what move the artificial agent would suggest if they were different.'
 		},
 		{
 			title: 'Interventions',
@@ -235,25 +280,48 @@
 		},
 		{
 			title: 'Interventions continued',
-			element: document.getElementById('model-output'),
-			intro: 'By changing the concept prediction, the AI agent classification will be updated. In this case, there was no change.'
+			element: document.getElementById('task-out'),
+			intro: 'By changing which concepts are detected, the AI\'s suggested label will be updated. In this case, there was no change.'
 		},
 		{
 			title: 'Reset concept predictions',
 			element: document.getElementById('16-reset'),
-			intro: 'You reset a concept prediction by pressing the reset button.'
+			intro: 'Concepts are reset by pressing the reset button.'
+		},
+		{% endif %}
+		{
+			element: document.getElementById('move-select'),
+			intro: 'When you have evaluated each card hand you will need to select your move.'
+		},
+		{
+			element: document.getElementById('ai_use-select'),
+			intro: 'Select the checkboxes detailing how the AI influenced the label you selected.'
+		},
+		{
+			element: document.getElementById('ai_use-0'),
+			intro: 'Please select this option if the AI\'s suggested label helped you make a move.'
+		},
+		{% if (explanation_version == 2) or (explanation_version == 3) %}
+		{
+			element: document.getElementById('ai_use-1'),
+			intro: 'Please select this option if the concept explanations helped you make a move.'
+		},
+		{% endif %}
+		{
+			element: document.getElementById('ai_use-2'),
+			intro: 'Please select this option if you made your move without evaluating any of the AI agent\'s outputs.'
 		},
 		{
 			title: 'Contine to study',
-			element: document.getElementById('continue_to_study'),
+			element: document.getElementById('continue-to-study'),
 			intro: 'You can continue to the study by pressing the continue button.'
 		},]
 	});
 
-	{% if explanation_version == 0 %}
-		const update_step = 15
-	{% elif explanation_version == 1 %}
-		const update_step = 16
+	{% if (explanation_version == 0) or (explanation_version == 1) %}
+		const update_step = 12
+	{% elif (explanation_version == 2) or (explanation_version == 3) %}
+		const update_step = 13
 	{% endif %}
 
 	intro.onbeforechange(function () {
@@ -276,7 +344,6 @@
 		document.getElementById(input_id).value = initial_value;
 		document.getElementById(input_id + "-reset").disabled = true;
 		document.getElementById(input_id + "-badge").innerHTML = initial_value;
-		predict();
 	};
 
 	// enabe reset button
@@ -288,9 +355,21 @@
 	function updateValue(input_id) {
 		new_value = document.getElementById(input_id).value;
 		document.getElementById(input_id + "-badge").innerHTML = new_value;
+		predict();
 	};
 
-	const allExplanaions = document.querySelectorAll('[id^="explanation_"]');
+	const allExplanaions = document.querySelectorAll('[id^="explanation-"]');
+
+	allExplanaions.forEach(explanation_object => {
+		// log whenever concept explanations are visible
+		var observer = new IntersectionObserver((entries) => {
+			if (entries[0].intersectionRatio >= 0.001) {  // using ratio as without logs are less consistent
+				var concept_id = entries[0]['target'].id.split("_")[1] // get concept id
+			}
+		});
+
+		observer.observe(explanation_object);
+	});
 
 	// predict downstrea task from concept values
 	async function predict() {
@@ -300,10 +379,14 @@
 		// get concpet values and turn into tensor
 		var concept_arr = [];
 		{% for concept in concept_out %}
-			concept_arr.push(document.getElementById("{{ concept[0] }}").value);
+			{% if explanation_version == 2 or explanation_version == 3 %}
+				concept_arr.push(document.getElementById("{{ concept[0] }}").value);
+			{% else %}
+				concept_arr.push({{ concept[2]|round(2) }});
+			{% endif %}
 		{% endfor %}
 		const concept_vec = new Float32Array(concept_arr);
-		const tensorA = new ort.Tensor('float32', concept_vec, [1, 22]);
+		const tensorA = new ort.Tensor('float32', concept_vec, [1, 28]);
 
 		// prepare feed for models. Key is the model input name
 		const feeds = { "onnx::Gemm_0": tensorA };
@@ -314,14 +397,91 @@
 		// Get index of highest value in downsream task predictions
 		const task_output = results["7"].data;
 		var maxNum = Math.max.apply(null, task_output);
-		var index = task_output.indexOf(maxNum);
+		var task_index = task_output.indexOf(maxNum);
 
 		// update task out prediction displayed
-		if (index <= 0) {
-			document.getElementById("task-out").innerHTML = "seborrheic keratosis";
+		if (task_index == 0) {
+			var model_task_out = "hit"
+		} else if (task_index == 1) {
+			var model_task_out = "stand"
 		} else {
-			document.getElementById("task-out").innerHTML = "malignant melanoma";
+			var model_task_out = "surrender"
 		};
+		document.getElementById("task-out").innerHTML = model_task_out;
+
+		{% if (explanation_version != 0) %}
+		// update soft/hard hand out
+		if (concept_vec[0] > concept_vec[1]) {
+			var model_concept_out = "soft"
+		} else {
+			var model_concept_out = "hard"
+		};
+		document.getElementById("hard-soft-out").innerHTML = model_concept_out;
+
+		// update player value out
+		const player_values = concept_vec.slice(2, 17);
+		let i = player_values.indexOf(Math.max(...player_values));
+		if (i == 0) {
+			var model_concept_out = "21 or over"
+		} else if (i == 1) {
+			var model_concept_out = "21"
+		} else if (i == 2) {
+			var model_concept_out = "20"
+		} else if (i == 3) {
+			var model_concept_out = "19"
+		} else if (i == 4) {
+			var model_concept_out = "18"
+		} else if (i == 5) {
+			var model_concept_out = "17"
+		} else if (i == 6) {
+			var model_concept_out = "16"
+		} else if (i == 7) {
+			var model_concept_out = "15"
+		} else if (i == 8) {
+			var model_concept_out = "14"
+		} else if (i == 9) {
+			var model_concept_out = "13"
+		} else if (i == 10) {
+			var model_concept_out = "12"
+		} else if (i == 11) {
+			var model_concept_out = "11"
+		} else if (i == 12) {
+			var model_concept_out = "10"
+		} else if (i == 13) {
+			var model_concept_out = "9"
+		} else {
+			var model_concept_out = "8 or below"
+		};
+		document.getElementById("player-value-out").innerHTML = model_concept_out;
+
+		// update dealer card out
+		const dealer_cards = concept_vec.slice(17, 27);
+		i = dealer_cards.indexOf(Math.max(...dealer_cards));
+		if (i == 0) {
+			var model_concept_out = "2"
+		} else if (i == 1) {
+			var model_concept_out = "3"
+		} else if (i == 2) {
+			var model_concept_out = "4"
+		} else if (i == 3) {
+			var model_concept_out = "5"
+		} else if (i == 4) {
+			var model_concept_out = "6"
+		} else if (i == 5) {
+			var model_concept_out = "7"
+		} else if (i == 6) {
+			var model_concept_out = "8"
+		} else if (i == 7) {
+			var model_concept_out = "9"
+		} else if (i == 8) {
+			var model_concept_out = "10"
+		} else {
+			var model_concept_out = "1 or 11"
+		};
+		document.getElementById("dealer-card-out").innerHTML = model_concept_out;
+		{% endif %}
+
+		return task_index;
 	};
 
 	// reorder concept explanations
@@ -329,7 +489,7 @@
 		var concept_list = [];
 		// add all concepts ids and values to array
 		allExplanaions.forEach(explanation_object => {
-			concept_list.push([explanation_object.id, document.getElementById(explanation_object.id.split('_')[1]).value])
+			concept_list.push([explanation_object.id, document.getElementById(explanation_object.id.split('-')[1]).value])
 		});
 
 		// reorder aray
@@ -340,47 +500,51 @@
 		}
 
 		// add each explanation to the div all_explanations in order of concept_list
-		container = document.getElementById("all_explanations")
+		container = document.getElementById("all-explanations")
 		concept_list.forEach(explanation => {
 			container.appendChild(document.getElementById(explanation[0]))
 		});
 	};
 
-	// image zoom
-	var imageZoomMainOptions = {
-		fillContainer: true,
-		offset: {vertical: 0, horizontal: 0},
-		zoomPosition: "bottom",
-		zoomStyle: "z-index: 999;",
-	};
-
 	var imageZoomExplainOptions = {
 		fillContainer: true,
-		scale: 1.1,
-		zoomWidth: 300,
-		width: 200,
-		height: 200,
+		scale: 2,
+		zoomWidth: 200,
+		width: 125,
+		height: 125,
 		offset: {vertical: 0, horizontal: 0},
 		zoomPosition: "bottom",
 		zoomStyle: "z-index: 999;",
 	};
 
-	//new ImageZoom(document.getElementById("input_img_container"), imageZoomMainOptions);
-
-	{% if explanation_version == 1 %}
+	{% if explanation_version == 3 %}
 		{% for concept in concept_out %}
-			new ImageZoom(document.getElementById("{{ concept[0] }}_img_container"), imageZoomExplainOptions);
+			new ImageZoom(document.getElementById("{{ concept[0] }}-img-container"), imageZoomExplainOptions);
 		{% endfor %}
 	{% endif %}
 
 	// run all functions for the inital page load
 	window.onload = function() {
-		predict();
-		orderConcepts("hl");
+		var model_pred = predict();
+		orderConcepts("hl", false);
 
-		// clear select form radio buttons
+		// clear select form radio and check buttons
+		document.getElementById("participant_move-0").checked = false;
+		document.getElementById("participant_move-1").checked = false;
+		document.getElementById("participant_move-2").checked = false;
 		document.getElementById("ai_use-0").checked = false;
 		document.getElementById("ai_use-1").checked = false;
+		document.getElementById("ai_use-2").checked = false;
+
+		// Only allow surrender on the first move
+		{% if first_move == False %}
+			document.getElementById("participant_move-2").disabled = true;
+		{% endif %}
+
+		// delete option if explanation version does not require it
+		{% if explanation_version == 0 or explanation_version == 1 %}
+			document.getElementById("ai_use-1").parentElement.remove();
+		{% endif %}
 	};
 
 </script>
