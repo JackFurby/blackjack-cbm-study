@@ -70,63 +70,65 @@
 
 
 		<div class="row">
-			<div class="col-md-12 col-lg-8" id="input_img_container">
-				<h3 class="text-white mt-3">Dealers cards</h3>
-				<div class="border border-5 border-white dealer_cards_container my-3 rounded-3 overflow-hidden">
-					<img class="dealer_cards" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/dealer_cards.jpeg') }}" width="100%">
-				</div>
-				<h3 class="text-white mt-3">Players cards</h3>
-				<div class="border border-5 border-white player_cards_container mt-3 rounded-3 overflow-hidden">
-					<img class="player_cards" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/player_cards.jpeg') }}" width="100%">
-				</div>
+			<div class="col-md-12 col-lg-8">
+				<div id="game-column">
+					<h3 class="text-white mt-3">Dealers cards</h3>
+					<div class="border border-5 border-white dealer_cards_container my-3 rounded-3 overflow-hidden">
+						<img class="dealer_cards" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/dealer_cards.jpeg') }}" width="100%">
+					</div>
+					<h3 class="text-white mt-3">Players cards</h3>
+					<div class="border border-5 border-white player_cards_container mt-3 rounded-3 overflow-hidden">
+						<img class="player_cards" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/player_cards.jpeg') }}" width="100%">
+					</div>
 
-				<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
+					<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
 
-					<form action="" method="post" class="mb-3 mx-2" autocomplete="off" id="sample-submit-form">
-						{{ form.hidden_tag() }}
-						<p class="h6">Make your move</p>
-						<div class="mb-3">
-							{% for subfield in form.participant_move %}
-								<div class="form-check">
-									{{ subfield (class_="form-check-input") }}
-									{{ subfield.label (class_="form-check-label") }}
-								</div>
-							{% endfor %}
-						</div>
-						<div id="ai-use-options">
-							<p class="h6">Select all that apply
-								<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
-									<i class="bi bi-question-circle-fill"></i>
-								</button>
-							</p>
-							<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
-								<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
-								<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
-								<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
-							</div>
-							{% for error in form.ai_use.errors %}
-								<p class="text-danger">{{ error }}</p>
-							{% endfor %}
+						<form action="" method="post" class="mb-3 mx-2" autocomplete="off" id="sample-submit-form">
+							{{ form.hidden_tag() }}
+							<p class="h6">Make your move</p>
 							<div class="mb-3">
-								{% for subfield in form.ai_use %}
+								{% for subfield in form.participant_move %}
 									<div class="form-check">
 										{{ subfield (class_="form-check-input") }}
 										{{ subfield.label (class_="form-check-label") }}
 									</div>
 								{% endfor %}
 							</div>
-						</div>
-						<div class="">
-							<button type="submit" name=submit class="btn btn-primary">Submit</button>
-						</div>
-					</form>
+							<div id="ai-use-options">
+								<p class="h6">Select all that apply
+									<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+										<i class="bi bi-question-circle-fill"></i>
+									</button>
+								</p>
+								<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
+									<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
+									<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
+									<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
+								</div>
+								{% for error in form.ai_use.errors %}
+									<p class="text-danger">{{ error }}</p>
+								{% endfor %}
+								<div class="mb-3">
+									{% for subfield in form.ai_use %}
+										<div class="form-check">
+											{{ subfield (class_="form-check-input") }}
+											{{ subfield.label (class_="form-check-label") }}
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							<div class="">
+								<button type="submit" name=submit class="btn btn-primary">Submit</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 
 			{% if explanation_version != 4 %}
 				<div class="col-md-12 col-lg-4">
 					<h3 class="text-white mt-3">AI helper</h3>
-					<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden">
+					<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden" id="ai-column">
 						<div id="ai-prediction">
 							<div class="card border-info">
 								<div class="card-header">
@@ -143,14 +145,16 @@
 						</div>
 
 						{% if explanation_version == 2 or explanation_version == 3 %}
-							<h4 class="mt-3">AI detected concepts</h4>
+							<div id="concept-sort">
+								<h4 class="mt-3" id="concept-list-title">AI detected concepts</h4>
 
-							<label for="concept_order" class="form-label">Concept order</label>
-							<select class="form-select mb-3" aria-label="concept_order" id="concept_order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
-								<option selected value="hl">Highest to lowest concept value</option>
-								<option value="lh">Lowest to highest concept value</option>
-							</select>
-							<div class="row" id="all_explanations">
+								<label for="concept_order" class="form-label">Concept order</label>
+								<select class="form-select mb-3" aria-label="concept-order" id="concept-order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+									<option selected value="hl">Highest to lowest concept value</option>
+									<option value="lh">Lowest to highest concept value</option>
+								</select>
+							</div>
+							<div class="row" id="all-explanations" style="overflow: auto;">
 								{% for concept in concept_out %}
 									{% set concept_id = concept[0] %}
 
@@ -342,6 +346,7 @@
 		};
 		document.getElementById("task-out").innerHTML = model_task_out;
 
+		{% if (explanation_version != 0) %}
 		// update soft/hard hand out
 		if (concept_vec[0] > concept_vec[1]) {
 			var model_concept_out = "soft"
@@ -411,6 +416,7 @@
 			var model_concept_out = "1 or 11"
 		};
 		document.getElementById("dealer_card_out").innerHTML = model_concept_out;
+		{% endif %}
 
 		// log model prediction (will only update db on first log)
 		$.ajax({
@@ -425,17 +431,6 @@
 
 		return task_index
 	};
-
-	//https://bootstrap-menu.com/detail-fixed-onscroll.html
-	//document.addEventListener("DOMContentLoaded", function(){
-	//	window.addEventListener('scroll', function() {
-	//		if (window.scrollY > 50) {
-	//			document.getElementById('ai-prediction').classList.add('fixed-top');
-	//		} else {
-	//			document.getElementById('ai-prediction').classList.remove('fixed-top');
-	//		}
-	//	});
-	//});
 
 	// reorder concept explanations
 	function orderConcepts(orderby, logUpdate) {
@@ -452,8 +447,8 @@
 			concept_list.sort(function(a,b){return a[1].localeCompare(b[1]);}).reverse();
 		}
 
-		// add each explanation to the div all_explanations in order of concept_list
-		container = document.getElementById("all_explanations")
+		// add each explanation to the div all-explanations in order of concept_list
+		container = document.getElementById("all-explanations")
 		concept_list.forEach(explanation => {
 			container.appendChild(document.getElementById(explanation[0]))
 		});
@@ -560,6 +555,12 @@
 				document.getElementById('collapseRules').classList.add("show");
 			{% endif %}
 		{% endif %}
+
+		// AI column should match the hieght of the game column
+		var game_height = document.getElementById('game-column').clientHeight;
+		var ai_suggest_height = document.getElementById('ai-prediction').clientHeight;
+		var concept_sort_height = document.getElementById('concept-sort').clientHeight;
+		document.getElementById('all-explanations').style.height = (game_height - ai_suggest_height - concept_sort_height - 100) + "px";
 	};
 
 </script>

@@ -27,68 +27,70 @@
 
 		<div class="row">
 			<div class="col-md-12 col-lg-8">
-				<div id="input-img-container">
-					<h3 class="text-white mt-3">Dealers cards</h3>
-					<div class="border border-5 border-white dealer-cards-container mt-3 rounded-3 overflow-hidden">
-						<img class="dealer-cards" src="{{ url_for('study.get_image_tutorial', filename='/dealer_cards.jpeg') }}" width="100%">
-					</div>
-					<h3 class="text-white mt-3">Players cards</h3>
-					<div class="border border-5 border-white player-cards-container my-3 rounded-3 overflow-hidden">
-						<img class="player-cards" src="{{ url_for('study.get_image_tutorial', filename='/player_cards.jpeg') }}" width="100%">
-					</div>
-				</div>
-
-				<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
-					<p class="h6">Label the sample</p>
-					<div class="mb-3" id="move-select">
-
-							<div class="form-check">
-								<input class="form-check-input" id="participant_move-0" name="participant_move" required="" type="radio" value="0">
-								<label class="form-check-label" for="participant_move-0">Hit</label>
-							</div>
-
-							<div class="form-check">
-								<input class="form-check-input" id="participant_move-1" name="participant_move" required="" type="radio" value="1">
-								<label class="form-check-label" for="participant_move-1">Stand</label>
-							</div>
-
-							<div class="form-check">
-								<input class="form-check-input" id="participant_move-2" name="participant_move" required="" type="radio" value="2">
-								<label class="form-check-label" for="participant_move-2">Surrender</label>
-							</div>
-
-					</div>
-					<p class="h6">Select all that apply
-						<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
-							<i class="bi bi-question-circle-fill"></i>
-						</button>
-					</p>
-					<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
-						<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
-						<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
-						<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
+				<div id="game-column">
+					<div id="input-img-container">
+						<h3 class="text-white mt-3">Dealers cards</h3>
+						<div class="border border-5 border-white dealer-cards-container mt-3 rounded-3 overflow-hidden">
+							<img class="dealer-cards" src="{{ url_for('study.get_image_tutorial', filename='/dealer_cards.jpeg') }}" width="100%">
+						</div>
+						<h3 class="text-white mt-3">Players cards</h3>
+						<div class="border border-5 border-white player-cards-container my-3 rounded-3 overflow-hidden">
+							<img class="player-cards" src="{{ url_for('study.get_image_tutorial', filename='/player_cards.jpeg') }}" width="100%">
+						</div>
 					</div>
 
-					<div class="mb-3" id="ai_use-select">
+					<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
+						<p class="h6">Make your move</p>
+						<div class="mb-3" id="move-select">
 
-							<div class="form-check">
-								<input class="form-check-input" id="ai_use-0" name="ai_use" type="checkbox" value="1">
-								<label class="form-check-label" for="ai_use-0">I was influenced by the AI’s suggestion</label>
-							</div>
+								<div class="form-check">
+									<input class="form-check-input" id="participant_move-0" name="participant_move" required="" type="radio" value="0">
+									<label class="form-check-label" for="participant_move-0">Hit</label>
+								</div>
 
-							<div class="form-check">
-								<input class="form-check-input" id="ai_use-1" name="ai_use" type="checkbox" value="2">
-								<label class="form-check-label" for="ai_use-1">I was influenced by the concepts the AI detected</label>
-							</div>
+								<div class="form-check">
+									<input class="form-check-input" id="participant_move-1" name="participant_move" required="" type="radio" value="1">
+									<label class="form-check-label" for="participant_move-1">Stand</label>
+								</div>
 
-							<div class="form-check">
-								<input class="form-check-input" id="ai_use-2" name="ai_use" type="checkbox" value="3">
-								<label class="form-check-label" for="ai_use-2">I was not influenced by the AI</label>
-							</div>
+								<div class="form-check">
+									<input class="form-check-input" id="participant_move-2" name="participant_move" required="" type="radio" value="2">
+									<label class="form-check-label" for="participant_move-2">Surrender</label>
+								</div>
 
-					</div>
-					<div class="">
-						<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+						</div>
+						<p class="h6">Select all that apply
+							<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+								<i class="bi bi-question-circle-fill"></i>
+							</button>
+						</p>
+						<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
+							<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
+							<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
+							<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
+						</div>
+
+						<div class="mb-3" id="ai_use-select">
+
+								<div class="form-check">
+									<input class="form-check-input" id="ai_use-0" name="ai_use" type="checkbox" value="1">
+									<label class="form-check-label" for="ai_use-0">I was influenced by the AI’s suggestion</label>
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" id="ai_use-1" name="ai_use" type="checkbox" value="2">
+									<label class="form-check-label" for="ai_use-1">I was influenced by the concepts the AI detected</label>
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" id="ai_use-2" name="ai_use" type="checkbox" value="3">
+									<label class="form-check-label" for="ai_use-2">I was not influenced by the AI</label>
+								</div>
+
+						</div>
+						<div class="">
+							<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+						</div>
 					</div>
 				</div>
 
@@ -96,7 +98,7 @@
 
 			<div class="col-md-12 col-lg-4">
 				<h3 class="text-white mt-3">AI helper</h3>
-				<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden">
+				<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden" id="ai-column">
 					<div id="ai-prediction">
 						<div class="card border-info">
 							<div class="card-header">
@@ -113,14 +115,16 @@
 					</div>
 
 					{% if explanation_version == 2 or explanation_version == 3 %}
-						<h4 class="mt-3" id="concept-list-title">AI detected concepts</h4>
+						<div id="concept-sort">
+							<h4 class="mt-3" id="concept-list-title">AI detected concepts</h4>
 
-						<label for="concept_order" class="form-label">Concept order</label>
-						<select class="form-select mb-3" aria-label="concept-order" id="concept-order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
-							<option selected value="hl">Highest to lowest concept value</option>
-							<option value="lh">Lowest to highest concept value</option>
-						</select>
-						<div class="row" id="all-explanations">
+							<label for="concept_order" class="form-label">Concept order</label>
+							<select class="form-select mb-3" aria-label="concept-order" id="concept-order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+								<option selected value="hl">Highest to lowest concept value</option>
+								<option value="lh">Lowest to highest concept value</option>
+							</select>
+						</div>
+						<div class="row" id="all-explanations" style="overflow: auto;">
 							{% for concept in concept_out %}
 								{% set concept_id = concept[0] %}
 
@@ -545,6 +549,13 @@
 		{% if explanation_version == 0 or explanation_version == 1 %}
 			document.getElementById("ai_use-1").parentElement.remove();
 		{% endif %}
+
+		// AI column should match the hieght of the game column
+		var game_height = document.getElementById('game-column').clientHeight;
+		var ai_suggest_height = document.getElementById('ai-prediction').clientHeight;
+		var concept_sort_height = document.getElementById('concept-sort').clientHeight;
+		document.getElementById('all-explanations').style.height = (game_height - ai_suggest_height - concept_sort_height - 100) + "px";
+
 	};
 
 </script>
