@@ -159,7 +159,7 @@
 									{% set concept_id = concept[0] %}
 
 									<div class="col-12" id="explanation_{{ concept_id }}">
-										<div class="card mb-3">
+										<div class="card mb-3 overflow-hidden">
 											{% if explanation_version == 2 %}
 												<div class="card-body">
 													<div class="d-flex justify-content-between">
@@ -186,8 +186,14 @@
 												</div>
 											{% elif explanation_version == 3 %}
 												<div class="row g-0">
-													<div class="col-md-4" id="{{ concept_id }}_img_container">
-														<img class="img-fluid rounded-start w-100 h-auto" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/' + concept[1]|string) }}">
+													<div class="col-md-4 overflow-hidden">
+														<div class="zoomist-container-{{ concept_id }}">
+															<div class="zoomist-wrapper" style="background-color: white;">
+																<div class="zoomist-image" id="{{ concept_id }}_img_container">
+																	<img class="img-fluid w-100 h-auto" src="{{ url_for('study.get_image', filename=game_id|string + '/' + sample_number|string + '/' + concept[1]|string) }}">
+																</div>
+															</div>
+														</div>
 													</div>
 													<div class="col-md-8">
 														<div class="card-body">
@@ -231,7 +237,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.16.3/dist/ort.min.js"></script>
-<script type=text/javascript src="{{url_for('static', filename='js/js-image-zoom.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/zoomist@2/zoomist.umd.js"></script>
 <script type="text/javascript">
 
 	var last_recorded_action_time = Date.now();
@@ -505,20 +511,17 @@
 		})
 	{% endfor %}
 
-	var imageZoomExplainOptions = {
-		fillContainer: true,
-		scale: 2,
-		zoomWidth: 200,
-		width: 125,
-		height: 125,
-		offset: {vertical: 0, horizontal: 0},
-		zoomPosition: "bottom",
-		zoomStyle: "z-index: 999;",
-	};
-
 	{% if explanation_version == 3 %}
 		{% for concept in concept_out %}
-			new ImageZoom(document.getElementById("{{ concept[0] }}_img_container"), imageZoomExplainOptions);
+		new Zoomist('.zoomist-container-{{ concept[0] }}', {
+			// Optional parameters
+			maxScale: 4,
+			bounds: true,
+			// if you need slider
+			slider: false,
+			// if you need zoomer
+			zoomer: false
+		});
 		{% endfor %}
 	{% endif %}
 

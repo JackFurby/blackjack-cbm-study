@@ -22,6 +22,21 @@ class MultiCheckboxAtLeastOne():
 			raise StopValidation(self.message)
 
 
+class MultiCheckboxExclusive():
+	"""
+	ensure if a given option is selected then throw an error if any other option is selected at the same time
+	"""
+	def __init__(self, exclusive_option, message=None):
+		if not message:
+			message = f"One option you checked is exclusive and cannot be checked at the same time as other options."
+		self.message = message
+		self.exclusive_option = exclusive_option
+
+	def __call__(self, form, field):
+		if (str(self.exclusive_option) in field.data) and (len(field.data) > 1):
+			raise StopValidation(self.message)
+
+
 class MultiCheckboxNotMoreThan():
 	def __init__(self, max, message=None):
 		if not message:
@@ -56,7 +71,7 @@ class DemographicForm(FlaskForm):
 
 
 class SampleForm(FlaskForm):
-	ai_use = MultiCheckboxField('Select all that apply', choices=[(1, "I was influenced by the AI’s suggestion"), (2, "I was influenced by the concepts the AI detected"), (3, "I was not influenced by the AI")], validators=[MultiCheckboxAtLeastOne(), MultiCheckboxNotMoreThan(max=2)], validate_choice=False)
+	ai_use = MultiCheckboxField('Select all that apply', choices=[(1, "I was influenced by the AI’s suggestion"), (2, "I was influenced by the concepts the AI detected"), (3, "I was not influenced by the AI")], validators=[MultiCheckboxAtLeastOne(), MultiCheckboxNotMoreThan(max=2), MultiCheckboxExclusive(exclusive_option=3, message="'I was not influenced by the AI' cannot be selected at the same time as other options")], validate_choice=False)
 	participant_move = RadioField('Make your move', choices=[(0, "Hit"), (1, "Stand"), (2, "Surrender")], validators=[DataRequired()])
 
 
