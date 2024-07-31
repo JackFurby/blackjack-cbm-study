@@ -25,4 +25,4 @@
 24 24.jpeg 0.0 dealer_card_9
 25 25.jpeg 1.0 dealer_card_10
 26 26.jpeg 0.0 dealer_card_a
-27 27.jpeg 1.0 dealer_multi_cards
+27 27.jpeg 0.0 dealer_multi_cards
