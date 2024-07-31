@@ -111,7 +111,7 @@ def tutorial():
 
 	model_name = "blackjack_CtoY_onnx_model.onnx"
 
-	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=3)
+	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
 
 
 @bp.route('/samples', methods=['GET', 'POST'])
@@ -233,7 +233,7 @@ def samples():
 		4 = No AI (only used for first game)
 		"""
 
-		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=3, total_score=total_score, first_move=first_move)  # explanation_version
+		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=explanation_version, total_score=total_score, first_move=first_move)
 	else:
 		return redirect(url_for('study.survey'))
 
