@@ -162,5 +162,5 @@ cython_debug/
 
 # extra
 app.db
-skin-study.pub
-skin-study
+blackjack-study.key.pub
+blackjack-study.key
