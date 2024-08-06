@@ -116,7 +116,7 @@ def tutorial():
 
 	model_name = "blackjack_CtoY_onnx_accurate_model.onnx"
 
-	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=3) #session["explanation_version"]
+	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
 
 
 @bp.route('/samples', methods=['GET', 'POST'])
@@ -148,7 +148,7 @@ def samples():
 		if "games_left" not in session:  # randomly order games
 			games = [int(i) for i in next(os.walk(f"{bp.static_folder}/games"))[1]]
 			random.shuffle(games)
-			if len(games) > 20:  # max 20 games per participant 
+			if len(games) > 20:  # max 20 games per participant
 				participant_games = games[:20]
 			else:
 				participant_games = games
