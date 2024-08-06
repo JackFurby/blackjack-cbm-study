@@ -50,6 +50,13 @@
 					<li>Dealer and you both go over 21: 0 points</li>
 				</ul>
 
+				<h2>Hand Types</h2>
+
+				<ul>
+					<li>Hard Hand: A player's hand without an Ace, or a hand where the Ace counts as 1.</li>
+					<li>Soft Hand: A player's hand with an Ace that counts as 11 without going over 21.</li>
+				</ul>
+
 				<h2>Additional Rules</h2>
 
 				<ul>
@@ -348,7 +355,11 @@
 		} else if (task_index == 1) {
 			var model_task_out = "stand"
 		} else {
-			var model_task_out = "surrender"
+			{% if first_move == True %}  // only allow surrender predict on first move
+				var model_task_out = "surrender"
+			{% else %}
+				var model_task_out = "stand"
+			{% endif %}
 		};
 		document.getElementById("task-out").innerHTML = model_task_out;
 

@@ -84,10 +84,15 @@ def survey():
 			session["demographic_id"] = demographic.id
 			session["explanation_version"] = participant.explanation_version
 			session["demographic_survey"] = True
-			return redirect('/tutorial')
+			return redirect('/ai_intro')
 	else:
-		return redirect('/tutorial')
+		return redirect('/ai_intro')
 	return render_template('study/survey.html', title='Demographic survey', form=form)
+
+
+@bp.route('/ai_intro', methods=["GET"])
+def ai_brief():
+	return render_template('study/ai_intro.html', title='AI introduction')
 
 
 @bp.route('/tutorial')
@@ -109,9 +114,9 @@ def tutorial():
 			concept_preds[idx].append(line[0])  # Add concept string to concept item
 			concept_preds[idx].append(line[1])  # Add concept description to concept item
 
-	model_name = "blackjack_CtoY_onnx_model.onnx"
+	model_name = "blackjack_CtoY_onnx_accurate_model.onnx"
 
-	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
+	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=3) #session["explanation_version"]
 
 
 @bp.route('/samples', methods=['GET', 'POST'])
@@ -143,7 +148,11 @@ def samples():
 		if "games_left" not in session:  # randomly order games
 			games = [int(i) for i in next(os.walk(f"{bp.static_folder}/games"))[1]]
 			random.shuffle(games)
-			session["games_left"] = games
+			if len(games) > 20:  # max 20 games per participant 
+				participant_games = games[:20]
+			else:
+				participant_games = games
+			session["games_left"] = participant_games
 
 			session["ai_free"] = True
 
@@ -215,7 +224,7 @@ def samples():
 				concept_preds[idx].append(line[0])  # Add concept string to concept item
 				concept_preds[idx].append(line[1])  # Add concept description to concept item
 
-		model_name = "blackjack_CtoY_onnx_model.onnx"
+		model_name = "blackjack_CtoY_onnx_study_model.onnx"
 
 		if session["ai_free"]:
 			explanation_version = 4

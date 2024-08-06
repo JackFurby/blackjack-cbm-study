@@ -1,0 +1,36 @@
+{% extends "template_parts/base.html" %}
+
+
+{% block content %}
+<main>
+	<div class="container-fluid" style="max-width: 1500px;">
+		<div class="bg-white p-3 rounded-3 overflow-hidden mt-3">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+				<h1 class="h2">AI introduction</h1>
+			</div>
+		<div class="">
+
+			<p>We have created an artificial intelligence (AI) agent to suggest moves to make in the card game Blackjack. Moves are detected in a two-step process. First, the AI agent detects 28 visual observations about the player and dealer card hands, which we call <i>concepts</i>. These concepts are then used to allow the AI agent to reason about the move it suggests.</p>
+
+			<div class="row mb-3">
+				<div class="col-12 col-sm-10 col-md-8 mb-3 mx-auto">
+					<figure>
+						<img class="h-auto" src="{{ url_for('study.get_image_tutorial', filename='/CBM_blackjack.jpeg') }}" width="100%">
+						<figcaption>The AI agent suggests a move for given card hands in a two-step process. (1) The AI agent analyses an image of the card hands and detects the presence or absence of 28 concepts before (2) using the concept outputs to suggest a move.</figcaption>
+					</figure>
+				</div>
+			</div>
+
+			<p>The concepts the AI agent can detect refer to the player's card hand type, the player's card hand summed value, and the dealer's card value (these are detailed in the games rules which is accessable during the study). The AI agent can suggest the moves hit, stand and surrender. It should be understood the AI agent can make mistakes.</p>
+
+			<p>In this study, we are evaluating the AI agent's capabilities and although we have provided a score for you to keep track of how you are doing, the score cannot be converted into a monetary value.</p>
+
+			<div class="">
+				<a class="btn btn-primary" href="{{ url_for('study.tutorial') }}" role="button">Continue to the tutorial</a>
+			</div>
+		</div>
+	</div>
+
+</main>
+
+{% endblock %}

@@ -26,6 +26,10 @@ flask db migrate -m "message here"
 flask db upgrade
 ```
 
+```sh
+flask --app app --debug run
+```
+
 
 Deploying the application
 

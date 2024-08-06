@@ -239,25 +239,20 @@
 		{
 			title: 'AI sugestion',
 			element: document.getElementById('task-out'),
-			intro: 'The AI agent will suggest a move for each card hand.'
+			intro: 'The AI agent will suggest a move to make.'
 		},
 		{% if (explanation_version == 1) or (explanation_version == 2) or (explanation_version == 3) %}
 		{
 			title: 'AI sugestion',
 			element: document.getElementById('ai-prediction'),
-			intro: 'The AI agent is equipt to explain its reasoning for the move it is suggesting you make.'
+			intro: 'The AI agent is equipt to explain its reasoning for the suggested move.'
 		},
 		{% endif %}
 		{% if (explanation_version == 2) or (explanation_version == 3) %}
 		{
 			title: 'Concept explanations',
 			element: document.getElementById('concept-list-title'),
-			intro: 'The suggested move is based on the detection of 28 concepts. The concepts can be inspected to explain why a move was suggested.'
-		},
-		{
-			title: 'Concept explanations',
-			element: document.getElementById('concept-list-title'),
-			intro: 'Concepts represent the player\'s hand type, the sum of cards in the player\'s hand, and the card the dealer has.'
+			intro: 'The suggested move is based on the detection of 28 concepts which can be inspected.'
 		},
 		{
 			title: 'Concept order',
@@ -266,36 +261,36 @@
 		},
 		{
 			title: 'Concept value',
-			element: document.getElementById('16-badge'),
+			element: document.getElementById('25-badge'),
 			intro: 'The AI agent represents each concept with a value between 0 and 1. Any value of 0.5 and over means the AI agent has detected the concept as present, and a value below 0.5 as not present. This value can be seen as how confident the model is. A value close to 0 or 1 is very confident, whereas a value close to 0.5 is not confident.'
 		},
 		{% endif %}
 		{% if explanation_version == 3 %}
 		{
 			title: 'Explanation saliency',
-			element: document.getElementById('16-img-container'),
-			intro: 'Each concept explanation has an image which shows what the artificial agent used from the sample image. Red highlights regions contributing towards the concept detection and blue highlights regions against the concept detection.'
+			element: document.getElementById('25_img_container'),
+			intro: 'Each concept explanation has an image which shows what the artificial agent used from the playing cards. Red highlights regions contributing towards the concept detection and blue highlights regions against the concept detection. You can zoom in on the image using the scroll wheel on your mouse.'
 		},
 		{% endif %}
 		{% if (explanation_version == 2) or (explanation_version == 3) %}
 		{
 			title: 'Interventions',
-			element: document.getElementById('16'),
+			element: document.getElementById('25'),
 			intro: 'You can modify concepts if you believe they are incorrect or wish to see what move the artificial agent would suggest if they were different.'
 		},
 		{
 			title: 'Interventions',
-			element: document.getElementById('16'),
-			intro: 'In this example, we have updated the value for the concept "Brown".'
+			element: document.getElementById('25'),
+			intro: 'In this example, we have updated the value for the concept "Dealer card value is 10".'
 		},
 		{
 			title: 'Interventions continued',
 			element: document.getElementById('task-out'),
-			intro: 'By changing which concepts are detected, the AI\'s suggested label will be updated. In this case, there was no change.'
+			intro: 'By changing which concepts are detected, the AI\'s suggested move will be updated. In this case, there was no change.'
 		},
 		{
 			title: 'Reset concept predictions',
-			element: document.getElementById('16-reset'),
+			element: document.getElementById('25-reset'),
 			intro: 'Concepts are reset by pressing the reset button.'
 		},
 		{% endif %}
@@ -305,11 +300,11 @@
 		},
 		{
 			element: document.getElementById('ai_use-select'),
-			intro: 'Select the checkboxes detailing how the AI influenced the label you selected.'
+			intro: 'You will also need to select the checkboxes detailing how the AI influenced the move you selected.'
 		},
 		{
 			element: document.getElementById('ai_use-0'),
-			intro: 'Please select this option if the AI\'s suggested label helped you make a move.'
+			intro: 'Please select this option if the AI\'s suggested move helped you.'
 		},
 		{% if (explanation_version == 2) or (explanation_version == 3) %}
 		{
@@ -328,17 +323,17 @@
 		},]
 	});
 
-	{% if (explanation_version == 0) or (explanation_version == 1) %}
-		const update_step = 12
-	{% elif (explanation_version == 2) or (explanation_version == 3) %}
-		const update_step = 13
+	{% if (explanation_version == 2) %}
+		const update_step = 10
+	{% elif (explanation_version == 3) %}
+		const update_step = 11
 	{% endif %}
 
 	intro.onbeforechange(function () {
 		if (this._currentStep === update_step) {
-			document.getElementById('16').value = 0.15;
-			updateValue('16');
-			enableBtn('16-reset')
+			document.getElementById('25').value = 0.15;
+			updateValue('25');
+			enableBtn('25-reset')
 			predict();
 		}
 	});
