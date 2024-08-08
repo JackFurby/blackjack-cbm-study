@@ -1,5 +1,5 @@
 from flask import Flask, request, Response, flash, make_response, current_app, send_from_directory, jsonify, session
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, send_file
 from flask_mail import Message
 import cv2
 from datetime import datetime
@@ -13,6 +13,7 @@ from app import db
 from app import mail
 import random
 import json
+from app.study.utils import get_consent_pdf
 
 
 def get_datetime(milliseconds):
@@ -51,7 +52,7 @@ def forms():
 			#msg.html = '<h1>HTML body</h1>'
 			#mail.send(msg)
 
-			session["consent_form"] = True
+			session["consent_form"] = consent.id
 			return redirect('/survey')
 	else:
 		return redirect('/survey')
@@ -224,7 +225,7 @@ def samples():
 				concept_preds[idx].append(line[0])  # Add concept string to concept item
 				concept_preds[idx].append(line[1])  # Add concept description to concept item
 
-		model_name = "blackjack_CtoY_onnx_study_model.onnx"
+		model_name = "blackjack_CtoY_onnx_study_ace.onnx"
 
 		if session["ai_free"]:
 			explanation_version = 4
@@ -431,6 +432,24 @@ def get_image(filename):
 @bp.route('/get_image_tutorial/<path:filename>')
 def get_image_tutorial(filename):
 	return send_from_directory(bp.static_folder, f"tutorial/{filename}")
+
+
+@bp.route('/get_consent_form')
+def get_consent_form():
+	consent = db.session.query(Consent).filter_by(id=session["consent_form"]).first()
+	edits = [
+		consent.read_pis,
+		consent.understood_pis,
+		consent.participation_voluntary,
+		consent.information_consent,
+		consent.data_access,
+		consent.anonymised_excerpts,
+		consent.results_published,
+		consent.take_part,
+		consent.participant_name,
+		consent.date.strftime("%d/%m/%Y")
+	]
+	return send_file(get_consent_pdf(edits, bp.static_folder + "/Consent-Form.pdf"), as_attachment=True, download_name='Consent-Form.pdf', mimetype='application/pdf')
 
 
 # log concept prediction changes
