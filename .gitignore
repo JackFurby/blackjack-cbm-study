@@ -164,3 +164,4 @@ cython_debug/
 app.db
 blackjack-study.key.pub
 blackjack-study.key
+app/study/static/Consent-Form.pdf

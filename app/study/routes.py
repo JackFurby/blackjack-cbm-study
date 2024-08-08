@@ -64,21 +64,22 @@ def survey():
 	if "demographic_survey" not in session:
 		form = DemographicForm()
 		if form.validate_on_submit():
-			demographic = Demographic(
-				blackjack_experience=form.blackjack_experience.data,
-				computer_experience=form.computer_experience.data,
-				age=form.age.data,
-				gender=form.gender.data
-			)
-			db.session.add(demographic)
-			db.session.commit()
-
 			explanatons_list = [0, 1, 2, 3]
 
 			participant = Participant(
 				explanation_version=random.choice(explanatons_list)  # explanation version chosen randomly. This should give us an even split between the two
 			)
 			db.session.add(participant)
+			db.session.commit()
+
+			demographic = Demographic(
+				blackjack_experience=form.blackjack_experience.data,
+				computer_experience=form.computer_experience.data,
+				age=form.age.data,
+				gender=form.gender.data,
+				participant_id=participant.id
+			)
+			db.session.add(demographic)
 			db.session.commit()
 
 			session["participant_id"] = participant.id
@@ -421,7 +422,21 @@ def sample_survey():
 
 @bp.route('/close')
 def close():
-	return render_template('study/close.html', title='Thank you')
+	won = Game.query.filter(Game.participant_id==session["participant_id"], Game.ai_enabled==True, Game.score > 0).count()
+	lost = Game.query.filter(Game.participant_id==session["participant_id"], Game.ai_enabled==True, Game.score < 0).count()
+	drew = Game.query.filter(Game.participant_id==session["participant_id"], Game.ai_enabled==True, Game.score == 0).count()
+
+	completed_participants = [participant.participant_id for participant in Demographic.query.filter(Demographic.completed_study==True).all()]
+
+	total_won = Game.query.filter(Game.ai_enabled==True, Game.score > 0, Game.participant_id.in_(completed_participants)).count()
+	total_lost = Game.query.filter(Game.ai_enabled==True, Game.score < 0, Game.participant_id.in_(completed_participants)).count()
+	total_drew = Game.query.filter(Game.ai_enabled==True, Game.score == 0, Game.participant_id.in_(completed_participants)).count()
+
+	avg_won = total_won/len(completed_participants)
+	avg_lost = total_lost/len(completed_participants)
+	avg_drew = total_drew/len(completed_participants)
+
+	return render_template('study/close.html', title='Thank you', won=won, lost=lost, drew=drew, avg_won=avg_won, avg_lost=avg_lost, avg_drew=avg_drew)
 
 
 @bp.route('/get_image/<path:filename>')

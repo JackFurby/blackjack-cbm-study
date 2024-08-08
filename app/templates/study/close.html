@@ -8,6 +8,67 @@
 			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
 				<h1 class="h2">Thank you for taking part</h1>
 			</div>
+
+			<div>
+				<p>Download your consent form:
+					<a class="btn btn-primary" href="{{ url_for('study.get_consent_form')}}" download>
+						Download
+					</a>
+				</p>
+				<h2>How did you do</h2>
+
+				<div class="row row-cols-1 row-cols-md-3">
+					<div class="col">
+						<div class="card mb-2">
+							<div class="card-header">
+								Won
+							</div>
+							<div class="card-body">
+								<p class="card-text">{{ won }} games</p>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card mb-2">
+							<div class="card-header">
+								Lost
+							</div>
+							<div class="card-body">
+								<p class="card-text">{{ lost }} games</p>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-header">
+								Drew
+							</div>
+							<div class="card-body">
+								<p class="card-text">{{ drew }} games</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<p>Other players won an average of {{ avg_won }} games, lost {{ avg_lost }} games and drew {{ avg_drew }} games.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
 		</div>
 	</div>
 
