@@ -1,0 +1,3 @@
+player 28
+dealer 17
+first_move False

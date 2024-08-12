@@ -65,9 +65,12 @@ def survey():
 		form = DemographicForm()
 		if form.validate_on_submit():
 			explanatons_list = [0, 1, 2, 3]
+			#model_list = ["blackjack_CtoY_onnx_standard", "blackjack_CtoY_onnx_mixed_ace_seven"]
+			model_list = ["blackjack_CtoY_onnx_mixed_ace_seven"]
 
 			participant = Participant(
-				explanation_version=random.choice(explanatons_list)  # explanation version chosen randomly. This should give us an even split between the two
+				explanation_version=random.choice(explanatons_list),  # explanation version chosen randomly. This should give us an even split between the two
+				model_name=random.choice(model_list)
 			)
 			db.session.add(participant)
 			db.session.commit()
@@ -85,6 +88,7 @@ def survey():
 			session["participant_id"] = participant.id
 			session["demographic_id"] = demographic.id
 			session["explanation_version"] = participant.explanation_version
+			session["model_name"] = participant.model_name
 			session["demographic_survey"] = True
 			return redirect('/ai_intro')
 	else:
@@ -116,7 +120,7 @@ def tutorial():
 			concept_preds[idx].append(line[0])  # Add concept string to concept item
 			concept_preds[idx].append(line[1])  # Add concept description to concept item
 
-	model_name = "blackjack_CtoY_onnx_accurate_model.onnx"
+	model_name = "blackjack_CtoY_onnx_standard.onnx"
 
 	return render_template('study/tutorial.html', title='Tutorial', concept_out=concept_preds, model_name=model_name, explanation_version=session["explanation_version"])
 
@@ -148,7 +152,7 @@ def samples():
 	if "participant_id" in session:  # redirect if participant has not completed demographic survey
 
 		if "games_left" not in session:  # randomly order games
-			games = [int(i) for i in next(os.walk(f"{bp.static_folder}/games"))[1]]
+			games = [int(i) for i in next(os.walk(f"{bp.static_folder}/games/{session['model_name']}"))[1]]
 			random.shuffle(games)
 			if len(games) > 20:  # max 20 games per participant
 				participant_games = games[:20]
@@ -173,7 +177,7 @@ def samples():
 
 		# get samples for the current game
 		if "game_samples" not in session:
-			samples = [int(i) for i in next(os.walk(f"{bp.static_folder}/games/{game_id}"))[1]]
+			samples = [int(i) for i in next(os.walk(f"{bp.static_folder}/games/{session['model_name']}/{game_id}"))[1]]
 			samples.sort()
 			session["game_samples"] = samples
 
@@ -186,7 +190,7 @@ def samples():
 			return redirect(url_for('study.game_end', last_player_sample=samples_left[0], player_move=-1))
 
 		# get player total
-		with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{sample_number}/info.txt") as f:
+		with bp.open_resource(f"{bp.static_folder}/games/{session['model_name']}/{game_id}/{sample_number}/info.txt") as f:
 			content = (f.read().decode('latin1').strip()).split("\n")
 			lines = []
 			for line in content:
@@ -212,7 +216,7 @@ def samples():
 		# get concept predictions and explanatons
 		concept_preds = []
 		# open txt file with concept predictions and concept explanation file names
-		with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{sample_number}/out.txt") as f:
+		with bp.open_resource(f"{bp.static_folder}/games/{session['model_name']}/{game_id}/{sample_number}/out.txt") as f:
 			content = (f.read().decode('latin1').strip()).split("\n")
 			for line in content:
 				concept = line.split(" ")
@@ -226,7 +230,7 @@ def samples():
 				concept_preds[idx].append(line[0])  # Add concept string to concept item
 				concept_preds[idx].append(line[1])  # Add concept description to concept item
 
-		model_name = "blackjack_CtoY_onnx_study_ace.onnx"
+		model_name = f"{session['model_name']}.onnx"
 
 		if session["ai_free"]:
 			explanation_version = 4
@@ -263,7 +267,7 @@ def game_end():
 	game_id = games_left[-1]
 
 	# get player total
-	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{last_player_sample}/info.txt") as f:
+	with bp.open_resource(f"{bp.static_folder}/games/{session['model_name']}/{game_id}/{last_player_sample}/info.txt") as f:
 		content = (f.read().decode('latin1').strip()).split("\n")
 		lines = []
 		for line in content:
@@ -279,7 +283,7 @@ def game_end():
 			first_move = False
 
 	# get dealer total
-	with bp.open_resource(f"{bp.static_folder}/games/{game_id}/{dealer_sample_number}/info.txt") as f:
+	with bp.open_resource(f"{bp.static_folder}/games/{session['model_name']}/{game_id}/{dealer_sample_number}/info.txt") as f:
 		content = (f.read().decode('latin1').strip()).split("\n")
 		lines = []
 		for line in content:
@@ -441,7 +445,7 @@ def close():
 
 @bp.route('/get_image/<path:filename>')
 def get_image(filename):
-	return send_from_directory(bp.static_folder, f"games/{filename}")
+	return send_from_directory(bp.static_folder, f"games/{session['model_name']}/{filename}")
 
 
 @bp.route('/get_image_tutorial/<path:filename>')
@@ -571,6 +575,10 @@ def clear_session():
 		print(f"Could not delete: {e}")
 	try:
 		del session["explanation_version"]
+	except Exception as e:
+		print(f"Could not delete: {e}")
+	try:
+		del session["model_name"]
 	except Exception as e:
 		print(f"Could not delete: {e}")
 	return redirect(url_for('study.study'))

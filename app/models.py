@@ -23,11 +23,23 @@ class Consent(db.Model):
 	keep_me_updated: so.Mapped[bool] = so.mapped_column(sa.Boolean())
 
 	def __repr__(self):
-		return f'<Consent {self.id}>'
+		return f'<Consent id:{self.id}, read_pis:{self.read_pis}, understood_pis:{self.understood_pis}, participation_voluntary:{self.participation_voluntary}, information_consent:{self.information_consent}, data_access:{self.data_access}, anonymised_excerpts:{self.anonymised_excerpts}, results_published:{self.results_published}, take_part:{self.take_part}, participant_name:{self.participant_name}, date:{self.date}, email:{self.email}, keep_me_updated:{self.keep_me_updated}>'
+
+
+class Participant(db.Model):
+	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	explanation_version: so.Mapped[int] = so.mapped_column()
+	model_name: so.Mapped[str] = so.mapped_column(sa.String(64), server_default="blackjack_CtoY_onnx_standard")
+	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
+	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+
+	def __repr__(self):
+		return f'<Participant id:{self.id}, explanation_version: {self.explanation_version}>'
 
 
 class Demographic(db.Model):
 	id: so.Mapped[int] = so.mapped_column(primary_key=True)
+	participant_id: so.Mapped[Optional[int]] = so.mapped_column()  # This created issues if it was a foreignKey???
 	blackjack_experience: so.Mapped[str] = so.mapped_column(sa.String(32))
 	computer_experience: so.Mapped[str] = so.mapped_column(sa.String(32))
 	age: so.Mapped[int] = so.mapped_column()
@@ -38,16 +50,6 @@ class Demographic(db.Model):
 
 	def __repr__(self):
 		return f'<Demographic id:{self.id}, completed_study:{self.completed_study}>'
-
-
-class Participant(db.Model):
-	id: so.Mapped[int] = so.mapped_column(primary_key=True)
-	explanation_version: so.Mapped[int] = so.mapped_column()
-	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
-	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-
-	def __repr__(self):
-		return f'<Participant id:{self.id}, explanation_version: {self.explanation_version}>'
 
 
 class Game(db.Model):

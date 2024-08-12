@@ -15,7 +15,7 @@
 						Download
 					</a>
 				</p>
-				<h2>How did you do</h2>
+				<h2>Your results</h2>
 
 				<div class="row row-cols-1 row-cols-md-3">
 					<div class="col">
@@ -50,23 +50,7 @@
 					</div>
 				</div>
 
-				<p>Other players won an average of {{ avg_won }} games, lost {{ avg_lost }} games and drew {{ avg_drew }} games.</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+				<p>Other players won an average of {{ avg_won|round(2) }} games, lost {{ avg_lost|round(2) }} games and drew {{ avg_drew|round(2) }} games.</p>
 
 			</div>
 		</div>
