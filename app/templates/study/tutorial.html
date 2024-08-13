@@ -19,8 +19,10 @@
 
 		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
 			<h1 class="mb-0 text-white">Blackjack</h1>
-			<h1 class="mb-0">
-				<span class="badge border border-5 border-white rounded-3">Score: 0</span></h1>
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Score: 0</span></h1>
+				<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Game: 1/20</span></h1>
+			</div>
 		</div>
 
 		<hr class="border border-5 border-white rounded-3 opacity-100">
@@ -66,7 +68,9 @@
 						</p>
 						<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
 							<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
+							{% if explanation_version == 2 or explanation_version == 3 %}
 							<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
+							{% endif %}
 							<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
 						</div>
 
@@ -245,7 +249,7 @@
 		{
 			title: 'AI sugestion',
 			element: document.getElementById('ai-prediction'),
-			intro: 'The AI agent is equipt to explain its reasoning for the suggested move.'
+			intro: 'The AI agent is equipped to explain its reasoning for the suggested move.'
 		},
 		{% endif %}
 		{% if (explanation_version == 2) or (explanation_version == 3) %}

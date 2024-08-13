@@ -236,7 +236,6 @@ def samples():
 			explanation_version = 4
 		else:
 			explanation_version = session["explanation_version"]
-
 		"""
 		explanation versions
 		====================
@@ -248,7 +247,7 @@ def samples():
 		4 = No AI (only used for first game)
 		"""
 
-		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=explanation_version, total_score=total_score, first_move=first_move)
+		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=explanation_version, total_score=total_score, first_move=first_move, game_count=f"{20 - len(session['games_left'])}/19")
 	else:
 		return redirect(url_for('study.survey'))
 

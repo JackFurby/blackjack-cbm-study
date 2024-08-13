@@ -11,6 +11,9 @@
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 				<a class="btn btn-outline-light border-5" data-bs-toggle="collapse" href="#collapseRules" role="button" aria-expanded="false" aria-controls="collapseRules"><h1 class="mb-0 h2">Rules</h1></a>
 				<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Score: {{ total_score }}</span></h1>
+				{% if (explanation_version != 4) %}
+					<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Game: {{ game_count }}</span></h1>
+				{% endif %}
 			</div>
 		</div>
 
@@ -109,7 +112,9 @@
 								</p>
 								<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
 									<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
+									{% if explanation_version == 2 or explanation_version == 3 %}
 									<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
+									{% endif %}
 									<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
 								</div>
 								{% for error in form.ai_use.errors %}
