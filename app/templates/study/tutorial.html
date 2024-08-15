@@ -1,7 +1,7 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 {% extends "template_parts/base.html" %}
-
-
-
 
 {% block content %}
 <main>
@@ -222,10 +222,6 @@
 	var intro = introJs();
 	intro.setOptions({
 		steps: [{
-			title: 'Welcome',
-			intro: 'Thank you for taking part in this study.'
-		},
-		{
 			title: 'Study aim',
 			intro: 'We have created an Artificial Intelligence (AI) agent to help you play the game Blackjack.'
 		},
@@ -328,18 +324,20 @@
 	});
 
 	{% if (explanation_version == 2) %}
-		const update_step = 10
+		const update_step = 9
 	{% elif (explanation_version == 3) %}
-		const update_step = 11
+		const update_step = 10
 	{% endif %}
 
 	intro.onbeforechange(function () {
-		if (this._currentStep === update_step) {
-			document.getElementById('25').value = 0.15;
-			updateValue('25');
-			enableBtn('25-reset')
-			predict();
-		}
+		{% if (explanation_version in [2, 3]) %}
+			if (this._currentStep === update_step) {
+				document.getElementById('25').value = 0.15;
+				updateValue('25');
+				enableBtn('25-reset')
+				predict();
+			}
+		{% endif %}
 	});
 
 	function startTutorial() {
@@ -553,10 +551,12 @@
 		{% endif %}
 
 		// AI column should match the hieght of the game column
-		var game_height = document.getElementById('game-column').clientHeight;
-		var ai_suggest_height = document.getElementById('ai-prediction').clientHeight;
-		var concept_sort_height = document.getElementById('concept-sort').clientHeight;
-		document.getElementById('all-explanations').style.height = (game_height - ai_suggest_height - concept_sort_height - 112) + "px";
+		{% if (explanation_version in [2, 3]) %}
+			var game_height = document.getElementById('game-column').clientHeight;
+			var ai_suggest_height = document.getElementById('ai-prediction').clientHeight;
+			var concept_sort_height = document.getElementById('concept-sort').clientHeight;
+			document.getElementById('all-explanations').style.height = (game_height - ai_suggest_height - concept_sort_height - 112) + "px";
+		{% endif %}
 
 	};
 
