@@ -74,7 +74,7 @@ connect to server: `ssh -i ./blackjack-study.key ubuntu@131.251.172.55`
 
   The platform does not contain the concept file participants can download after the study is complete. A PDF file needs to be uploaded to `app/study/static/Consent-Form.pdf`.
 
-5. Start app
+6. Start app
 
   *Note: this should be started such that it will run when you exit the terminal e.g. with tmux*
 

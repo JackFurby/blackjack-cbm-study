@@ -65,12 +65,28 @@ def survey():
 		form = DemographicForm()
 		if form.validate_on_submit():
 			explanatons_list = [0, 1, 2, 3]
-			#model_list = ["blackjack_CtoY_onnx_standard", "blackjack_CtoY_onnx_mixed_ace_seven"]
-			model_list = ["blackjack_CtoY_onnx_mixed_ace_seven"]
+			model_list = ["blackjack_CtoY_onnx_standard", "blackjack_CtoY_onnx_mixed_ace_seven"]
+
+			# place the explanation versions and model participants have used into buckets
+			completed_participants = [participant.participant_id for participant in Demographic.query.filter(Demographic.completed_study==True).all()]
+			model_expnanation_counts = []
+			for model in model_list:
+				for ex in explanatons_list:
+					count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model, Participant.id.in_(completed_participants)).count()
+					model_expnanation_counts.append(count)
+			min_value_index = model_expnanation_counts.index(min(model_expnanation_counts))
+
+			# Select a model and explanation combo based on what has the lowest count
+			if min_value_index in [0, 1, 2, 3]:
+				model_name = model_list[0]
+				explanation_version = min_value_index  # index matches explanation versions
+			else:
+				model_name = model_list[1]
+				explanation_version = min_value_index - 4
 
 			participant = Participant(
-				explanation_version=random.choice(explanatons_list),  # explanation version chosen randomly. This should give us an even split between the two
-				model_name=random.choice(model_list)
+				explanation_version=explanation_version,
+				model_name=model_name
 			)
 			db.session.add(participant)
 			db.session.commit()
