@@ -76,6 +76,17 @@ class SampleForm(FlaskForm):
 
 
 class SurveyForm(FlaskForm):
+	system_frequency = RadioField('I think that I would like to use this system frequently', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	unnecessarily_complex = RadioField('I found the system unnecessarily complex', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	easy_to_use = RadioField('I thought the system was easy to use', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	sus_need_support = RadioField('I think that I would need the support of a technical person to be able to use this system', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	well_integrated = RadioField('I found the various functions in this system were well integrated', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	inconsistency = RadioField('I thought there was too much inconsistency in this system', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	learn_quickly = RadioField('I would imagine that most people would learn to use this system very quickly', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	cumbersome = RadioField('I found the system very cumbersome to use', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	system_confident = RadioField('I felt very confident using the system', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+	pre_learning = RadioField('I needed to learn a lot of things before I could get going with this system', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
+
 	factors_in_data = RadioField('I found that the data included all relevant known causal factors with sufficient precision and granularity', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	understood = RadioField('I understood the explanations within the context of the game', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	change_detail_level = RadioField('I could change the level of detail on demand', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])

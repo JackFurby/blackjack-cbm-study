@@ -64,7 +64,7 @@ def survey():
 	if "demographic_survey" not in session:
 		form = DemographicForm()
 		if form.validate_on_submit():
-			explanatons_list = [0, 1, 2, 3]
+			explanatons_list = [0, 2, 3]  # [0, 1, 2, 3]  <-- removed explanation 1 from the study until we are sure we have enough participants
 			model_list = ["blackjack_CtoY_onnx_standard", "blackjack_CtoY_onnx_mixed_ace_seven"]
 
 			# place the explanation versions and model participants have used into buckets
@@ -72,17 +72,18 @@ def survey():
 			model_expnanation_counts = []
 			for model in model_list:
 				for ex in explanatons_list:
-					count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model, Participant.id.in_(completed_participants)).count()
+					#count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model, Participant.id.in_(completed_participants)).count()  <<<<<< use this if we want to only count complted studies
+					count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model).count()
 					model_expnanation_counts.append(count)
 			min_value_index = model_expnanation_counts.index(min(model_expnanation_counts))
 
 			# Select a model and explanation combo based on what has the lowest count
-			if min_value_index in [0, 1, 2, 3]:
+			if min_value_index in [idx for idx, i in enumerate(explanatons_list)]:  # the first half of indexes are for model 0
 				model_name = model_list[0]
-				explanation_version = min_value_index  # index matches explanation versions
-			else:
+				explanation_version = explanatons_list[min_value_index]  # index matches explanation versions
+			else:  # second half of indxes are for modl 1
 				model_name = model_list[1]
-				explanation_version = min_value_index - 4
+				explanation_version = explanatons_list[min_value_index - len(explanatons_list)]
 
 			participant = Participant(
 				explanation_version=explanation_version,
@@ -429,6 +430,12 @@ def sample_survey():
 			demographic = Demographic.query.filter_by(id=session["demographic_id"]).first()
 			demographic.completed_study = True
 			db.session.add(demographic)
+			db.session.commit()
+
+			# also mark study complete here (this table is not linked to the others)
+			consent = Consent.query.filter_by(id=session["consent_form"]).first()
+			consent.completed_study = True
+			db.session.add(consent)
 			db.session.commit()
 
 			session['closing_survey'] = True

@@ -21,6 +21,7 @@ class Consent(db.Model):
 	date: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	email: so.Mapped[str] = so.mapped_column(sa.String(128))
 	keep_me_updated: so.Mapped[bool] = so.mapped_column(sa.Boolean())
+	completed_study: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean(), default=False)  # As this table is never combined with the others we need this info again
 
 	def __repr__(self):
 		return f'<Consent id:{self.id}, read_pis:{self.read_pis}, understood_pis:{self.understood_pis}, participation_voluntary:{self.participation_voluntary}, information_consent:{self.information_consent}, data_access:{self.data_access}, anonymised_excerpts:{self.anonymised_excerpts}, results_published:{self.results_published}, take_part:{self.take_part}, participant_name:{self.participant_name}, date:{self.date}, email:{self.email}, keep_me_updated:{self.keep_me_updated}>'
@@ -128,6 +129,19 @@ class Survey(db.Model):
 	learn_to_understand: so.Mapped[int] = so.mapped_column()
 	need_references: so.Mapped[int] = so.mapped_column()
 	efficient: so.Mapped[int] = so.mapped_column()
+
+	# SUS
+	system_frequency: so.Mapped[int] = so.mapped_column(server_default="2")
+	unnecessarily_complex: so.Mapped[int] = so.mapped_column()
+	easy_to_use: so.Mapped[int] = so.mapped_column()
+	sus_need_support: so.Mapped[int] = so.mapped_column()
+	well_integrated: so.Mapped[int] = so.mapped_column()
+	inconsistency: so.Mapped[int] = so.mapped_column()
+	learn_quickly: so.Mapped[int] = so.mapped_column()
+	cumbersome: so.Mapped[int] = so.mapped_column()
+	system_confident: so.Mapped[int] = so.mapped_column()
+	pre_learning: so.Mapped[int] = so.mapped_column()
+
 	text: so.Mapped[str] = so.mapped_column(sa.String(5000))
 	created_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc))
 	updated_at: so.Mapped[datetime] = so.mapped_column(default=lambda: datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

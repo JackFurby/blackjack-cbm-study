@@ -9,12 +9,180 @@
 				<h1 class="h2">Closing Survey</h1>
 			</div>
 
-			<p class="mb-5">You are now at the end of the study but before it ends please could you complete the following survey. These questions ask about explanations provided by the AI agent. These questions refer to how well the AI could explain its reasoning for move suggestions. Depending on your study configuration the explanations the AI agent provided may have varied, or you may not have been provided with any at all.</p>
+			<p class="mb-5">You are at the end of the study! Before you go, please complete the following survey.</p>
 
 			<div class="">
 
 				<form action="" method="post">
 					{{ form.hidden_tag() }}
+
+					<h5>System usability</h5>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.system_frequency.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.system_frequency %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.unnecessarily_complex.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.unnecessarily_complex %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.easy_to_use.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.easy_to_use %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.sus_need_support.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.sus_need_support %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.well_integrated.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.well_integrated %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.inconsistency.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.inconsistency %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.learn_quickly.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.learn_quickly %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.cumbersome.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.cumbersome %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.system_confident.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.system_confident %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="row">
+						<div class="col-5">
+							{{ form.pre_learning.label (class_="form-label") }}
+						</div>
+						<div class="col-7">
+						{% for subfield in form.pre_learning %}
+							<div class="form-check form-check-inline">
+								{{ subfield (class_="form-check-input") }}
+								{{ subfield.label (class_="form-check-label") }}
+							</div>
+						{% endfor %}
+						</div>
+					</div>
+
+					<hr />
+
+					<h5>AI explanations - The AI agent's ability to clearly describe how it arrived at a suggested move</h5>
+
+					<hr />
 
 					<div class="row">
 						<div class="col-5">
@@ -183,7 +351,7 @@
 							<p>This could include (but is not limited to):</p>
 							<ul>
 								<li>How accurate you thought the AI predictions were and if you noticed any common areas where the AI was often incorrect.</li>
-								<li>The usefullness of the concept explantions and modifying concept predictions.</li>
+								<li>The usefullness of the AI capabilities and if you were able to understand what it was doing.</li>
 							</ul>
 						</div>
 						<div class="col">
