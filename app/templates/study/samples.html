@@ -129,8 +129,11 @@
 									{% endfor %}
 								</div>
 							</div>
-							<div class="">
-								<button type="submit" name=submit class="btn btn-primary">Submit</button>
+							<div class="d-flex justify-content-start flex-wrap flex-md-nowrap align-items-center pt-3">
+								<button type="submit" name=submit class="btn btn-primary" onclick="sampleSubmit()">Submit</button>
+								<div class="spinner-border mx-2" style="display: none;" role="status" id="submit_spinner">
+									<span class="sr-only"></span>
+								</div>
 							</div>
 						</form>
 					</div>
@@ -540,6 +543,17 @@
 		});
 		{% endfor %}
 	{% endif %}
+
+	function sampleSubmit() {
+		// Show the spinner animation
+		document.getElementById('submit_spinner').style.display = 'block';
+
+		// form is invalid - hide spinner
+		if (!document.getElementById("sample-submit-form").checkValidity()) {
+			document.getElementById('submit_spinner').style.display = 'none';
+		}
+
+	}
 
 	// run all functions for the inital page load
 	window.onload = function() {
