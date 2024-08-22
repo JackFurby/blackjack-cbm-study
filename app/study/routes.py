@@ -421,7 +421,17 @@ def sample_survey():
 				no_inconsistencies=int(form.no_inconsistencies.data),
 				learn_to_understand=int(form.learn_to_understand.data),
 				need_references=int(form.need_references.data),
-				efficient=int(form.efficient.data)
+				efficient=int(form.efficient.data),
+				system_frequency=int(form.system_frequency.data),
+				unnecessarily_complex=int(form.unnecessarily_complex.data),
+				easy_to_use=int(form.easy_to_use.data),
+				sus_need_support=int(form.sus_need_support.data),
+				well_integrated=int(form.well_integrated.data),
+				inconsistency=int(form.inconsistency.data),
+				learn_quickly=int(form.learn_quickly.data),
+				cumbersome=int(form.cumbersome.data),
+				system_confident=int(form.system_confident.data),
+				pre_learning=int(form.pre_learning.data)
 			)
 			db.session.add(survey)
 			db.session.commit()
