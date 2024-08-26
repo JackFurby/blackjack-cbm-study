@@ -14,202 +14,205 @@
 
 			<div class="text-center">
 				<button type="button" class="btn btn-primary btn-lg mx-auto" onclick="startTutorial()">Start tutorial</button>
-				<p class="mt-3">(You can start the study by clicking the button at the bottom of the page)</p>
 			</div>
 		</div>
 
-		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-			<h1 class="mb-0 text-white">Blackjack</h1>
-			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-				<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Score: 0</span></h1>
-				<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Game: 1/20</span></h1>
-			</div>
-		</div>
+		<div class="collapse" id="game_tutorial_collapse">
 
-		<hr class="border border-5 border-white rounded-3 opacity-100">
-
-		<div class="row">
-			<div class="col-md-12 col-lg-8">
-				<div id="game-column">
-					<div id="input-img-container">
-						<h3 class="text-white mt-3">Dealers cards</h3>
-						<div class="border border-5 border-white dealer-cards-container mt-3 rounded-3 overflow-hidden">
-							<img class="dealer-cards" src="{{ url_for('study.get_image_tutorial', filename='/dealer_cards.jpeg') }}" width="100%">
-						</div>
-						<h3 class="text-white mt-3">Players cards</h3>
-						<div class="border border-5 border-white player-cards-container my-3 rounded-3 overflow-hidden">
-							<img class="player-cards" src="{{ url_for('study.get_image_tutorial', filename='/player_cards.jpeg') }}" width="100%">
-						</div>
-					</div>
-
-					<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
-						<p class="h6">Make your move</p>
-						<div class="mb-3" id="move-select">
-
-								<div class="form-check">
-									<input class="form-check-input" id="participant_move-0" name="participant_move" required="" type="radio" value="0">
-									<label class="form-check-label" for="participant_move-0">Hit</label>
-								</div>
-
-								<div class="form-check">
-									<input class="form-check-input" id="participant_move-1" name="participant_move" required="" type="radio" value="1">
-									<label class="form-check-label" for="participant_move-1">Stand</label>
-								</div>
-
-								<div class="form-check">
-									<input class="form-check-input" id="participant_move-2" name="participant_move" required="" type="radio" value="2">
-									<label class="form-check-label" for="participant_move-2">Surrender</label>
-								</div>
-
-						</div>
-						<p class="h6">Select all that apply
-							<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
-								<i class="bi bi-question-circle-fill"></i>
-							</button>
-						</p>
-						<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
-							<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
-							{% if explanation_version == 2 or explanation_version == 3 %}
-							<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
-							{% endif %}
-							<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
-						</div>
-
-						<div class="mb-3" id="ai_use-select">
-
-								<div class="form-check">
-									<input class="form-check-input" id="ai_use-0" name="ai_use" type="checkbox" value="1">
-									<label class="form-check-label" for="ai_use-0">I was influenced by the AI’s suggestion</label>
-								</div>
-
-								<div class="form-check">
-									<input class="form-check-input" id="ai_use-1" name="ai_use" type="checkbox" value="2">
-									<label class="form-check-label" for="ai_use-1">I was influenced by the concepts the AI detected</label>
-								</div>
-
-								<div class="form-check">
-									<input class="form-check-input" id="ai_use-2" name="ai_use" type="checkbox" value="3">
-									<label class="form-check-label" for="ai_use-2">I was not influenced by the AI</label>
-								</div>
-
-						</div>
-						<div class="">
-							<button type="submit" name="submit" class="btn btn-primary">Submit</button>
-						</div>
-					</div>
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+				<h1 class="mb-0 text-white">Blackjack</h1>
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+					<a class="btn btn-outline-light border-5" role="button"><h1 class="mb-0 h2">Rules</h1></a>
+					<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Score: 0</span></h1>
+					<h1 class="mb-0"><span class="badge border border-5 border-white rounded-3">Game: 1/20</span></h1>
 				</div>
-
 			</div>
 
-			<div class="col-md-12 col-lg-4">
-				<h3 class="text-white mt-3">AI helper</h3>
-				<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden" id="ai-column">
-					<div id="ai-prediction">
-						<div class="card border-info">
-							<div class="card-header">
-							AI suggestion
+			<hr class="border border-5 border-white rounded-3 opacity-100">
+
+			<div class="row">
+				<div class="col-md-12 col-lg-8">
+					<div id="game-column">
+						<div id="input-img-container">
+							<h3 class="text-white mt-3">Dealers cards</h3>
+							<div class="border border-5 border-white dealer-cards-container mt-3 rounded-3 overflow-hidden">
+								<img class="dealer-cards" src="{{ url_for('study.get_image_tutorial', filename='/dealer_cards.jpeg') }}" width="100%">
 							</div>
-							<div class="card-body">
-								{% if explanation_version == 0 %}
-									<p class="card-text">The AI suggests you should <b id="task-out"></b>.</p>
-								{% else %}
-								<p class="card-text">The AI suggests you should <b id="task-out"></b> because you have a <b id="hard-soft-out">xxx</b> hand with a value of <b id="player-value-out">xxx</b> and the dealer has a card with the value of <b id="dealer-card-out">xxx</b>.</p>
-								{% endif %}
+							<h3 class="text-white mt-3">Players cards</h3>
+							<div class="border border-5 border-white player-cards-container my-3 rounded-3 overflow-hidden">
+								<img class="player-cards" src="{{ url_for('study.get_image_tutorial', filename='/player_cards.jpeg') }}" width="100%">
 							</div>
 						</div>
-					</div>
 
-					{% if explanation_version == 2 or explanation_version == 3 %}
-						<div id="concept-sort">
-							<h4 class="mt-3" id="concept-list-title">AI detected concepts</h4>
+						<div class="bg-white p-3 rounded-3 overflow-hidden mt-4">
+							<p class="h6">Make your move</p>
+							<div class="mb-3" id="move-select">
 
-							<label for="concept_order" class="form-label">Concept order</label>
-							<select class="form-select mb-3" aria-label="concept-order" id="concept-order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
-								<option selected value="hl">Highest to lowest concept value</option>
-								<option value="lh">Lowest to highest concept value</option>
-							</select>
-						</div>
-						<div class="row" id="all-explanations" style="overflow: auto;">
-							{% for concept in concept_out %}
-								{% set concept_id = concept[0] %}
-
-								<div class="col-12" id="explanation-{{ concept_id }}">
-									<div class="card mb-3 overflow-hidden">
-										{% if explanation_version == 2 %}
-											<div class="card-body">
-												<div class="d-flex justify-content-between">
-													<p class="card-text mb-0">{{ concept[3] }}</p>
-													<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc-{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc-{{ concept_id }}">
-														<i class="bi bi-question-circle-fill"></i>
-													</button>
-												</div>
-												<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc-{{ concept_id }}">
-													<p>{{ concept[4] }}</p>
-												</div>
-												<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-												<div class="d-flex">
-													<div>
-														<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
-													</div>
-													<div class="flex-grow-1 mx-2">
-														<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}');">
-													</div>
-													<div>
-														<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-													</div>
-												</div>
-											</div>
-										{% elif explanation_version == 3 %}
-											<div class="row g-0">
-												<div class="col-md-4 overflow-hidden">
-													<div class="zoomist-container-{{ concept_id }}">
-														<div class="zoomist-wrapper" style="background-color: white;">
-															<div class="zoomist-image" id="{{ concept_id }}_img_container">
-																<img loading="lazy" class="img-fluid w-100 h-auto" src="{{ url_for('study.get_image_tutorial', filename=concept[1]|string) }}">
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col-md-8">
-													<div class="card-body">
-														<div class="d-flex justify-content-between">
-															<p class="card-text mb-0">{{ concept[3] }}</p>
-															<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc-{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc-{{ concept_id }}">
-																<i class="bi bi-question-circle-fill"></i>
-															</button>
-														</div>
-														<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc-{{ concept_id }}">
-															<p>{{ concept[4] }}</p>
-														</div>
-														<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
-														<div class="d-flex">
-															<div>
-																<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
-															</div>
-															<div class="flex-grow-1 mx-2">
-																<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}');">
-															</div>
-															<div>
-																<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										{% endif %}
+									<div class="form-check">
+										<input class="form-check-input" id="participant_move-0" name="participant_move" required="" type="radio" value="0">
+										<label class="form-check-label" for="participant_move-0">Hit</label>
 									</div>
-								</div>
 
-							{% endfor %}
+									<div class="form-check">
+										<input class="form-check-input" id="participant_move-1" name="participant_move" required="" type="radio" value="1">
+										<label class="form-check-label" for="participant_move-1">Stand</label>
+									</div>
+
+									<div class="form-check">
+										<input class="form-check-input" id="participant_move-2" name="participant_move" required="" type="radio" value="2">
+										<label class="form-check-label" for="participant_move-2">Surrender</label>
+									</div>
+
+							</div>
+							<p class="h6">Select all that apply
+								<button class="btn btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_ai_use" aria-expanded="false" aria-controls="collapse_ai_use">
+									<i class="bi bi-question-circle-fill"></i>
+								</button>
+							</p>
+							<div class="collapse border border-info-subtle p-1 rounded mb-1" id="collapse_ai_use">
+								<p><b>I was influenced by the AI’s suggestion</b>: The suggested label the AI provided helped you make a move.</p>
+								{% if explanation_version == 2 or explanation_version == 3 %}
+								<p><b>I was influenced by the concepts the AI detected</b>: The concepts the AI detected helped you make a move.</p>
+								{% endif %}
+								<p><b>I was not influenced by the AI</b>: You made your move without looking at the AI outputs.</p>
+							</div>
+
+							<div class="mb-3" id="ai_use-select">
+
+									<div class="form-check">
+										<input class="form-check-input" id="ai_use-0" name="ai_use" type="checkbox" value="1">
+										<label class="form-check-label" for="ai_use-0">I was influenced by the AI’s suggestion</label>
+									</div>
+
+									<div class="form-check">
+										<input class="form-check-input" id="ai_use-1" name="ai_use" type="checkbox" value="2">
+										<label class="form-check-label" for="ai_use-1">I was influenced by the concepts the AI detected</label>
+									</div>
+
+									<div class="form-check">
+										<input class="form-check-input" id="ai_use-2" name="ai_use" type="checkbox" value="3">
+										<label class="form-check-label" for="ai_use-2">I was not influenced by the AI</label>
+									</div>
+
+							</div>
+							<div class="">
+								<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+							</div>
 						</div>
-					{% endif %}
+					</div>
+
+				</div>
+
+				<div class="col-md-12 col-lg-4">
+					<h3 class="text-white mt-3">AI helper</h3>
+					<div class="bg-white p-3 mt-3 rounded-3 overflow-hidden" id="ai-column">
+						<div id="ai-prediction">
+							<div class="card border-info">
+								<div class="card-header">
+								AI suggestion
+								</div>
+								<div class="card-body">
+									{% if explanation_version == 0 %}
+										<p class="card-text">The AI suggests you should <b id="task-out"></b>.</p>
+									{% else %}
+									<p class="card-text">The AI suggests you should <b id="task-out"></b> because you have a <b id="hard-soft-out">xxx</b> hand with a value of <b id="player-value-out">xxx</b> and the dealer has a card with the value of <b id="dealer-card-out">xxx</b>.</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+
+						{% if explanation_version == 2 or explanation_version == 3 %}
+							<div id="concept-sort">
+								<h4 class="mt-3" id="concept-list-title">AI detected concepts</h4>
+
+								<label for="concept_order" class="form-label">Concept order</label>
+								<select class="form-select mb-3" aria-label="concept-order" id="concept-order" onChange="orderConcepts(this.options[this.selectedIndex].value, true)">
+									<option selected value="hl">Highest to lowest concept value</option>
+									<option value="lh">Lowest to highest concept value</option>
+								</select>
+							</div>
+							<div class="row" id="all-explanations" style="overflow: auto;">
+								{% for concept in concept_out %}
+									{% set concept_id = concept[0] %}
+
+									<div class="col-12" id="explanation-{{ concept_id }}">
+										<div class="card mb-3 overflow-hidden">
+											{% if explanation_version == 2 %}
+												<div class="card-body">
+													<div class="d-flex justify-content-between">
+														<p class="card-text mb-0">{{ concept[3] }}</p>
+														<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc-{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc-{{ concept_id }}">
+															<i class="bi bi-question-circle-fill"></i>
+														</button>
+													</div>
+													<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc-{{ concept_id }}">
+														<p>{{ concept[4] }}</p>
+													</div>
+													<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+													<div class="d-flex">
+														<div>
+															<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+														</div>
+														<div class="flex-grow-1 mx-2">
+															<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}');">
+														</div>
+														<div>
+															<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+														</div>
+													</div>
+												</div>
+											{% elif explanation_version == 3 %}
+												<div class="row g-0">
+													<div class="col-md-4 overflow-hidden">
+														<div class="zoomist-container-{{ concept_id }}">
+															<div class="zoomist-wrapper" style="background-color: white;">
+																<div class="zoomist-image" id="{{ concept_id }}_img_container">
+																	<img loading="lazy" class="img-fluid w-100 h-auto" src="{{ url_for('study.get_image_tutorial', filename=concept[1]|string) }}">
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-8">
+														<div class="card-body">
+															<div class="d-flex justify-content-between">
+																<p class="card-text mb-0">{{ concept[3] }}</p>
+																<button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc-{{ concept_id }}" aria-expanded="false" aria-controls="collapseDesc-{{ concept_id }}">
+																	<i class="bi bi-question-circle-fill"></i>
+																</button>
+															</div>
+															<div class="collapse border border-info-subtle p-1 rounded mb-2" id="collapseDesc-{{ concept_id }}">
+																<p>{{ concept[4] }}</p>
+															</div>
+															<input type="hidden" id="{{ concept_id }}-initial" value="{{ concept[2]|round(2) }}">
+															<div class="d-flex">
+																<div>
+																	<button type="button" class="btn btn-secondary btn-sm" onclick="resetValue({{ concept_id }})" id="{{ concept_id }}-reset" disabled>Reset</button>
+																</div>
+																<div class="flex-grow-1 mx-2">
+																	<input type="range" class="form-range align-middle" min="0" max="1" step="0.01" value="{{ concept[2]|round(2) }}" id="{{ concept_id }}" name="{{ concept_id }}" onchange="enableBtn('{{ concept_id }}-reset'); updateValue('{{ concept_id }}');">
+																</div>
+																<div>
+																	<p class="align-middle"><span class="badge rounded-pill bg-secondary" id="{{ concept_id }}-badge">{{ concept[2]|round(2) }}</span></p>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											{% endif %}
+										</div>
+									</div>
+
+								{% endfor %}
+							</div>
+						{% endif %}
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="bg-white p-3 rounded-3 overflow-hidden my-3">
-			<div class="d-grid col-6 mx-auto">
-				<a class="btn btn-primary btn-lg mx-auto" href="{{ url_for('study.samples') }}" id="continue-to-study" role="button">Continue to study</a>
+			<div class="bg-white p-3 rounded-3 overflow-hidden my-3">
+				<div class="d-grid col-6 mx-auto">
+					<a class="btn btn-primary btn-lg mx-auto" href="{{ url_for('study.samples') }}" id="continue-to-study" role="button">Continue to study</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -342,6 +345,7 @@
 	});
 
 	function startTutorial() {
+		document.getElementById("game_tutorial_collapse").classList.add("show");
 		intro.start();
 	};
 
