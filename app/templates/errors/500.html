@@ -1,15 +1,15 @@
 {% extends "template_parts/base.html" %}
 
 {% block content %}
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-	<div class="bg-white p-3 mt-4">
-		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-			<h1>500 - Internal Server Error</h1>
+<main>
+	<div class="container-fluid" style="max-width: 1500px;">
+		<div class="bg-white p-3 rounded-3 overflow-hidden mt-3">
+			<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+				<h1 class="h2">500 - Internal Server Error</h1>
+			</div>
+		<div class="">
+			<a type="button" class="btn btn-primary btn-sm" href="{{ url_for('study.study') }}">Go to study</a>
 		</div>
-		<hr/>
-
-		<a type="button" class="btn btn-primary btn-sm" href="{{ url_for('study.study') }}">Go to study</a>
-
 	</div>
 </main>
 {% endblock %}
