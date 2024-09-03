@@ -1,3 +1,0 @@
-player 28
-dealer 8
-first_move False

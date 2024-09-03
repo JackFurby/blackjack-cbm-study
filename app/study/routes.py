@@ -69,13 +69,13 @@ def survey():
 
 			# place the explanation versions and model participants have used into buckets
 			completed_participants = [participant.participant_id for participant in Demographic.query.filter(Demographic.completed_study==True).all()]
-			model_expnanation_counts = []
+			model_explanatons_counts = []
 			for model in model_list:
 				for ex in explanatons_list:
 					#count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model, Participant.id.in_(completed_participants)).count()  <<<<<< use this if we want to only count complted studies
 					count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model).count()
-					model_expnanation_counts.append(count)
-			min_value_index = model_expnanation_counts.index(min(model_expnanation_counts))
+					model_explanatons_counts.append(count)
+			min_value_index = model_explanatons_counts.index(min(model_explanatons_counts))
 
 			# Select a model and explanation combo based on what has the lowest count
 			if min_value_index in [idx for idx, i in enumerate(explanatons_list)]:  # the first half of indexes are for model 0
@@ -171,8 +171,8 @@ def samples():
 		if "games_left" not in session:  # randomly order games
 			games = [int(i) for i in next(os.walk(f"{bp.static_folder}/games/{session['model_name']}"))[1]]
 			random.shuffle(games)
-			if len(games) > 20:  # max 20 games per participant
-				participant_games = games[:20]
+			if len(games) > 15:  # max 15 games per participant
+				participant_games = games[:15]
 			else:
 				participant_games = games
 			session["games_left"] = participant_games
@@ -264,7 +264,7 @@ def samples():
 		4 = No AI (only used for first game)
 		"""
 
-		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=explanation_version, total_score=total_score, first_move=first_move, game_count=f"{20 - len(session['games_left'])}/19")
+		return render_template('study/samples.html', title='CBM Study', game_id=game_id, sample_number=sample_number, concept_out=concept_preds, form=form, model_name=model_name, explanation_version=explanation_version, total_score=total_score, first_move=first_move, game_count=f"{15 - len(session['games_left'])}/14")
 	else:
 		return redirect(url_for('study.survey'))
 
