@@ -133,6 +133,7 @@
 							{% for error in form.email.errors %}
 								<span style="color: red;">[{{ error }}]</span>
 							{% endfor %}
+							<p class="text-secondary">This should be the same email you used to sign up to the study</p>
 						</div>
 						<div class="col-3 form-check px-3">
 							{{ form.keep_me_updated.label (class_="form-check-label") }}
