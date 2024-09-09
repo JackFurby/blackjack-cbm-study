@@ -64,7 +64,7 @@ class ConsentForm(FlaskForm):
 
 
 class DemographicForm(FlaskForm):
-	blackjack_experience = RadioField('I am experienced at playing Blackjack', choices=["Strongly agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
+	blackjack_experience = RadioField('I am experienced at playing Blackjack (also know as 21)', choices=["Strongly agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	computer_experience = RadioField('I am experienced in computer science / computing', choices=["Strongly agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"], validators=[DataRequired()])
 	age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=18)])
 	gender = SelectField('Gender', choices=[("", "Choose..."), ("Male", "male"), ("Female", "female"), ("Other", "other"),], validators=[DataRequired()])
