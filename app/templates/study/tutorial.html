@@ -346,6 +346,12 @@
 
 	function startTutorial() {
 		document.getElementById("game_tutorial_collapse").classList.add("show");
+		{% if (explanation_version in [2, 3]) %}
+			var game_height = document.getElementById('game-column').clientHeight;
+			var ai_suggest_height = document.getElementById('ai-prediction').clientHeight;
+			var concept_sort_height = document.getElementById('concept-sort').clientHeight;
+			document.getElementById('all-explanations').style.height = (game_height - ai_suggest_height - concept_sort_height - 112) + "px";
+		{% endif %}
 		intro.start();
 	};
 
