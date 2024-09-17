@@ -1,6 +1,5 @@
 from flask import Flask, request, Response, flash, make_response, current_app, send_from_directory, jsonify, session
 from flask import render_template, url_for, redirect, send_file
-from flask_mail import Message
 import cv2
 from datetime import datetime
 import os
@@ -10,7 +9,6 @@ from app.forms import ConsentForm, DemographicForm, SampleForm, SurveyForm
 from app.models import Consent, Demographic, Participant, Action, Sample, Survey, ConceptSort, Game
 from sqlalchemy import func
 from app import db
-from app import mail
 import random
 import json
 from app.study.utils import get_consent_pdf
@@ -46,11 +44,6 @@ def forms():
 			)
 			db.session.add(consent)
 			db.session.commit()
-
-			#msg = Message('test subject', sender=current_app.config['MAIL_USERNAME'], recipients=['furbyjl@cardiff.ac.uk'])
-			#msg.body = 'text body'
-			#msg.html = '<h1>HTML body</h1>'
-			#mail.send(msg)
 
 			session["consent_form"] = consent.id
 			return redirect('/survey')

@@ -3,11 +3,9 @@ from config import Config
 from sassutils.wsgi import SassMiddleware
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_mail import Mail
 
 db = SQLAlchemy()
 migrate = Migrate()
-mail = Mail()
 
 
 import app.models
@@ -28,7 +26,6 @@ def create_app(config_class=Config):
 
 	db.init_app(app)
 	migrate.init_app(app, db)
-	mail.init_app(app)
 
 	# Study
 	from app.study import bp as study_bp
