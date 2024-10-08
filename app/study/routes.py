@@ -57,7 +57,7 @@ def survey():
 	if "demographic_survey" not in session:
 		form = DemographicForm()
 		if form.validate_on_submit():
-			explanatons_list = [0, 2, 3]  # [0, 1, 2, 3]  <-- removed explanation 1 from the study until we are sure we have enough participants
+			explanatons_list = [0, 1, 2, 3]
 			model_list = ["blackjack_CtoY_onnx_standard", "blackjack_CtoY_onnx_mixed_ace_seven"]
 
 			# place the explanation versions and model participants have used into buckets
