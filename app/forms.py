@@ -97,4 +97,4 @@ class SurveyForm(FlaskForm):
 	learn_to_understand = RadioField('I think that most people would learn to understand the explanations very quickly', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	need_references = RadioField('I did not need more references in the explanations: e.g., strategy guides', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
 	efficient = RadioField('I received the explanations in a timely and efficient manner', choices=[(5, "Strongly agree"), (4, "Agree"), (3, "Neutral"), (2, "Disagree"), (1, "Strongly Disagree")], validators=[DataRequired()])
-	text = TextAreaField('Any other comments about the AI and explanations (max 5000 characters. Write "none" if you have no comments)', validators=[DataRequired(), length(max=5000)])
+	text = TextAreaField('Any other comments about the AI and explanations (max 5000 characters)', validators=[DataRequired(), length(max=5000)])
