@@ -65,8 +65,8 @@ def survey():
 			model_explanatons_counts = []
 			for model in model_list:
 				for ex in explanatons_list:
-					#count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model, Participant.id.in_(completed_participants)).count()  <<<<<< use this if we want to only count complted studies
-					count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model).count()
+					count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model, Participant.id.in_(completed_participants)).count()  # use this if we want to only count complted studies
+					#count = Participant.query.filter(Participant.explanation_version==ex, Participant.model_name==model).count()   # use this if we want want to count all studies
 					model_explanatons_counts.append(count)
 			min_value_index = model_explanatons_counts.index(min(model_explanatons_counts))
 
